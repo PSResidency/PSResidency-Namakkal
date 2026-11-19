@@ -220,56 +220,44 @@ document.getElementById("setupRooms").onclick = async () => {
   const message = document.getElementById("roomMessage");
 
   button.disabled = true;
-  message.innerText = "Checking room records...";
+  message.innerText = "Creating 21 rooms...";
 
   try {
     const existing = await db.collection("rooms").get();
 
-    if(!existing.empty){
+    if (!existing.empty) {
       message.innerText = "Room records already exist. No changes made.";
       return;
     }
 
     const batch = db.batch();
 
-    for(let n=8;n<=28;n++){
-      let type = "Single Room";
-      let rate = 0;
+    for (let n = 8; n <= 28; n++) {
+      let type = "Normal Single";
+      let rate = 500;
 
-      if((n>=8 && n<=14) || (n>=20 && n<=25)){
-        type = "Single Room";
-        rate = 700;
-      } else if((n>=15 && n<=17) || n===26){
-        type = "Double Room";
-        rate = 1300;
-      } else if(n>=18 && n<=19){
-        type = "AC Single Room";
+      if ([15, 16, 17, 26].includes(n)) {
+        type = "Normal Double";
+        rate = 900;
+      } else if ([18, 19].includes(n)) {
+        type = "AC Single";
         rate = 1000;
-      } else {
-        type = "AC Double Room";
-        rate = 0;
+      } else if ([27, 28].includes(n)) {
+        type = "AC Double";
+        rate = 1800;
       }
 
-      batch.set(db.collection("rooms").doc("room-"+n),{
-        number:n,
-        type:type,
-        rate:rate,
-        status:"Available"
-      });
-    }
-
-    for(let n=1;n<=7;n++){
-      batch.set(db.collection("rooms").doc("room-"+n),{
-        number:n,
-        type:"Single Room",
-        rate:0,
-        status:"Available"
+      batch.set(db.collection("rooms").doc("room-" + n), {
+        number: n,
+        type: type,
+        rate: rate,
+        status: "Available"
       });
     }
 
     await batch.commit();
-    message.innerText = "28 rooms created successfully!";
-  } catch(error) {
+    message.innerText = "21 rooms created successfully!";
+  } catch (error) {
     message.innerText = error.message;
   } finally {
     button.disabled = false;
