@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PS Residency | Admin Dashboard</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:#fff;font-family:Arial;padding:20px}
+.container{max-width:1000px;margin:30px auto}
+.card{background:#fff;color:#172033;padding:22px;border-radius:12px;margin-bottom:18px}
+h1{color:#c39a55}
+h2{font-size:19px}
+input,button,select{width:100%;padding:13px;margin:8px 0;border-radius:7px;border:1px solid #ddd;font-size:15px}
+button{background:#b18a45;color:white;border:0;font-weight:bold;cursor:pointer}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{background:#f3f4f6;padding:18px;border-radius:9px}
+.stat h2{color:#b18a45;font-size:26px;margin:8px 0}
+.small{color:#777;font-size:13px}
+.hidden{display:none}
+.room{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #ddd;color:#172033;gap:10px}
+.room button{width:auto;padding:9px;margin:0}
+#status{color:#b18a45;font-weight:bold}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>PS RESIDENCY</h1>
+<p>ADMIN MANAGEMENT DASHBOARD</p>
+
+<div class="card" id="loginBox">
+<h2>Admin Login</h2>
+<input id="email" type="email" placeholder="Admin Email" required>
+<input id="password" type="password" placeholder="Admin Password" required>
+<button id="loginBtn">LOGIN</button>
+<p id="loginMessage"></p>
+</div>
+
+<div id="dashboard" class="hidden">
+
+<div class="card">
+<h2>Welcome, Admin</h2>
+<p id="adminEmail" class="small"></p>
+<button id="logoutBtn">LOGOUT</button>
+</div>
+
+<div class="stats">
+<div class="stat">
+<p>Total Rooms</p>
+<h2 id="totalRooms">0</h2>
+</div>
+<div class="stat">
+<p>Occupied</p>
+<h2 id="occupiedRooms">0</h2>
+</div>
+<div class="stat">
+<p>Available</p>
+<h2 id="availableRooms">0</h2>
+</div>
+<div class="stat">
+<p>Today's Income</p>
+<h2 id="todayIncome">₹0</h2>
+</div>
+<div class="stat">
+<p>Booking Requests</p>
+<h2 id="bookingCount">0</h2>
+</div>
+</div>
+
+<div class="card">
+<h2>Room Management</h2>
+<p class="small">First time setup: create the 28 room records.</p>
+<button id="setupRooms">INITIALIZE 28 ROOMS</button>
+<p id="roomMessage"></p>
+<div id="roomList"></div>
+</div>
+
+<p id="status"></p>
+</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCpQhwNOFAjysHIOd_-7JkE2_FlKyHk9WI",
+  authDomain: "ps-residency-managemant.firebaseapp.com",
+  projectId: "ps-residency-managemant",
+  storageBucket: "ps-residency-managemant.firebasestorage.app",
+  messagingSenderId: "235249170055",
+  appId: "1:235249170055:web:4d0d8f50c4fac5f070ea22",
+  measurementId: "G-1Z9LYZE1CE"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const loginBox = document.getElementById("loginBox");
+const dashboard = document.getElementById("dashboard");
+
+let unsubscribeRooms = null;
+let unsubscribePayments = null;
+let unsubscribeBookings = null;
+
+document.getElementById("loginBtn").onclick = async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const message = document.getElementById("loginMessage");
+
+  if(!email || !password){
+    message.innerText = "Enter email and password";
+    return;
+  }
+
+  try {
+    await auth.signInWithEmailAndPassword(email,password);
+    message.innerText = "";
+  } catch(error) {
+    message.innerText = error.message;
+  }
+};
+
+auth.onAuthStateChanged(user => {
+  if(user){
+    loginBox.classList.add("hidden");
+    dashboard.classList.remove("hidden");
+    document.getElementById("adminEmail").innerText = user.email || "Admin";
+    startDashboard();
+  } else {
+    stopDashboard();
+    loginBox.classList.remove("hidden");
+    dashboard.classList.add("hidden");
+  }
+});
+
+function startDashboard(){
+
+  unsubscribeRooms = db.collection("rooms").onSnapshot(snapshot => {
+    const rooms = snapshot.docs.map(doc => ({
+      id:doc.id,...doc.data()
+    }));
+
+    document.getElementById("totalRooms").innerText = rooms.length;
+
+    const occupied = rooms.filter(r => r.status === "Occupied").length;
+    document.getElementById("occupiedRooms").innerText = occupied;
+    document.getElementById("availableRooms").innerText = rooms.length - occupied;
+
+    const list = document.getElementById("roomList");
+    list.innerHTML = "";
+
+    rooms.sort((a,b) => a.number-b.number).forEach(room => {
+      const div = document.createElement("div");
+      div.className = "room";
+
+      const info = document.createElement("span");
+      info.textContent = "Room " + room.number + " - " + room.type + " - " + room.status;
+
+      const button = document.createElement("button");
+      button.textContent = room.status === "Occupied" ? "MARK AVAILABLE" : "MARK OCCUPIED";
+
+      button.onclick = async () => {
+        const newStatus = room.status === "Occupied" ? "Available" : "Occupied";
+        try {
+          await db.collection("rooms").doc(room.id).update({status:newStatus});
+        } catch(error) {
+          alert(error.message);
+        }
+      };
+
+      div.appendChild(info);
+      div.appendChild(button);
+      list.appendChild(div);
+    });
+
+  }, error => {
+    document.getElementById("status").innerText = "Rooms error: " + error.message;
+  });
+
+  unsubscribePayments = db.collection("payments").onSnapshot(snapshot => {
+    const today = new Date().toLocaleDateString("en-CA");
+    let total = 0;
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if(data.date === today) total += Number(data.amount || 0);
+    });
+
+    document.getElementById("todayIncome").innerText =
+      "₹" + total.toLocaleString("en-IN");
+  }, error => {
+    document.getElementById("status").innerText = "Payments: " + error.message;
+  });
+
+  unsubscribeBookings = db.collection("bookingRequests").onSnapshot(snapshot => {
+    document.getElementById("bookingCount").innerText = snapshot.size;
+  }, error => {
+    document.getElementById("status").innerText = "Bookings: " + error.message;
+  });
+}
+
+function stopDashboard(){
+  if(unsubscribeRooms) unsubscribeRooms();
+  if(unsubscribePayments) unsubscribePayments();
+  if(unsubscribeBookings) unsubscribeBookings();
+  unsubscribeRooms = null;
+  unsubscribePayments = null;
+  unsubscribeBookings = null;
+}
+
+document.getElementById("setupRooms").onclick = async () => {
+  const button = document.getElementById("setupRooms");
+  const message = document.getElementById("roomMessage");
+
+  button.disabled = true;
+  message.innerText = "Checking room records...";
+
+  try {
+    const existing = await db.collection("rooms").get();
+
+    if(!existing.empty){
+      message.innerText = "Room records already exist. No changes made.";
+      return;
+    }
+
+    const batch = db.batch();
+
+    for(let n=8;n<=28;n++){
+      let type = "Single Room";
+      let rate = 0;
+
+      if((n>=8 && n<=14) || (n>=20 && n<=25)){
+        type = "Single Room";
+        rate = 700;
+      } else if((n>=15 && n<=17) || n===26){
+        type = "Double Room";
+        rate = 1300;
+      } else if(n>=18 && n<=19){
+        type = "AC Single Room";
+        rate = 1000;
+      } else {
+        type = "AC Double Room";
+        rate = 0;
+      }
+
+      batch.set(db.collection("rooms").doc("room-"+n),{
+        number:n,
+        type:type,
+        rate:rate,
+        status:"Available"
+      });
+    }
+
+    for(let n=1;n<=7;n++){
+      batch.set(db.collection("rooms").doc("room-"+n),{
+        number:n,
+        type:"Single Room",
+        rate:0,
+        status:"Available"
+      });
+    }
+
+    await batch.commit();
+    message.innerText = "28 rooms created successfully!";
+  } catch(error) {
+    message.innerText = error.message;
+  } finally {
+    button.disabled = false;
+  }
+};
+
+document.getElementById("logoutBtn").onclick = () => auth.signOut();
+</script>
+</body>
+</html>
