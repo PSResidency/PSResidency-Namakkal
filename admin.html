@@ -4,12 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PS Residency | Hotel Management</title>
-
 <style>
-:root{
-  --bg:#101827;--gold:#c49a55;--gold2:#e2bd7b;
-  --green:#15966a;--red:#d9534f;--muted:#788397;
-}
+:root{--bg:#101827;--gold:#c49a55;--gold2:#e2bd7b;--green:#15966a;--red:#d9534f;--muted:#788397}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:white;font-family:Arial,sans-serif}
 .container{max-width:1300px;width:94%;margin:30px auto}
@@ -25,204 +21,130 @@ button:hover{background:#9f773b}
 button:disabled{opacity:.5;cursor:not-allowed}
 .hidden{display:none!important}
 .login-wrap{max-width:450px;margin:70px auto}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
-.stat{background:white;color:#172033;padding:20px;border-radius:12px;min-height:115px}
+.stats{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px;margin-bottom:22px}
+.stat{background:white;color:#172033;padding:17px;border-radius:12px;min-height:105px}
 .stat p{margin:0;color:var(--muted);font-size:13px}
-.stat h2{color:#b18a45;font-size:27px;margin:14px 0 0}
+.stat h2{color:#b18a45;font-size:23px;margin:13px 0 0;overflow-wrap:anywhere}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.field{min-width:0}
-.field.full{grid-column:1/-1}
+.field{min-width:0}.field.full{grid-column:1/-1}
 .room-grid,.guest-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:18px}
-.room,.guest{border:1px solid #e3e7ed;border-radius:10px;padding:15px;background:#fff;color:#172033}
-.room strong,.guest strong{display:block;margin-bottom:7px}
-.room span,.guest span{display:block;font-size:13px;color:var(--muted);margin-top:5px}
-.available{color:var(--green)!important;font-weight:bold}
-.occupied{color:var(--red)!important;font-weight:bold}
+.room,.guest,.expense{border:1px solid #e3e7ed;border-radius:10px;padding:15px;background:#fff;color:#172033;min-width:0}
+.room strong,.guest strong,.expense strong{display:block;margin-bottom:7px}
+.room span,.guest span,.expense span{display:block;font-size:13px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}
+.available{color:var(--green)!important;font-weight:bold}.occupied{color:var(--red)!important;font-weight:bold}
 .room button,.guest button{font-size:12px;padding:9px}
 .logout{width:auto;min-width:110px;background:#26364d}
 .summary{background:#f4f6f9;padding:15px;border-radius:9px;margin-top:15px}
-.summary p{display:flex;justify-content:space-between;margin:8px 0}
-#status,#roomMessage,#loginMessage,#checkinMessage{font-weight:bold;color:#b18a45;overflow-wrap:anywhere}
-@media(max-width:1000px){
- .stats{grid-template-columns:repeat(3,1fr)}
- .room-grid,.guest-grid{grid-template-columns:repeat(2,1fr)}
-}
+.summary p{display:flex;justify-content:space-between;gap:12px;margin:8px 0}
+#status,#roomMessage,#loginMessage,#checkinMessage,#expenseMessage{font-weight:bold;color:#b18a45;overflow-wrap:anywhere}
+.report-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.report-box{background:#f4f6f9;padding:15px;border-radius:9px}
+.report-box span{display:block;color:var(--muted);font-size:13px}
+.report-box strong{display:block;margin-top:8px;font-size:20px;color:#b18a45}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.room-grid,.guest-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){
- .container{width:94%;margin:18px auto}
- .card{padding:17px}
- .stats{grid-template-columns:repeat(2,1fr);gap:9px}
- .stat{padding:14px;min-height:95px}
- .stat h2{font-size:22px}
- .form-grid,.room-grid,.guest-grid{grid-template-columns:1fr}
- .field.full{grid-column:auto}
- .logout{width:100%}
- .login-wrap{margin:35px auto}
+ .container{width:94%;margin:18px auto}.card{padding:17px}
+ .stats{grid-template-columns:repeat(2,1fr);gap:9px}.stat{padding:14px;min-height:90px}.stat h2{font-size:20px}
+ .form-grid,.room-grid,.guest-grid,.report-summary{grid-template-columns:1fr}
+ .field.full{grid-column:auto}.logout{width:100%}.login-wrap{margin:35px auto}
 }
 </style>
 </head>
-
 <body>
 <div class="container">
+  <div class="header"><div class="brand"><h1>PS RESIDENCY</h1><p>HOTEL MANAGEMENT SYSTEM</p></div></div>
 
-<div class="header">
-  <div class="brand">
-    <h1>PS RESIDENCY</h1>
-    <p>HOTEL MANAGEMENT SYSTEM</p>
+  <div class="card login-wrap" id="loginBox">
+    <h2>Admin Login</h2><p class="small">Sign in to manage PS Residency</p>
+    <input id="email" type="email" placeholder="Admin Email" autocomplete="username">
+    <input id="password" type="password" placeholder="Admin Password" autocomplete="current-password">
+    <button id="loginBtn">LOGIN TO DASHBOARD</button><p id="loginMessage"></p>
   </div>
-</div>
 
-<div class="card login-wrap" id="loginBox">
-  <h2>Admin Login</h2>
-  <p class="small">Sign in to manage PS Residency</p>
-  <input id="email" type="email" placeholder="Admin Email">
-  <input id="password" type="password" placeholder="Admin Password">
-  <button id="loginBtn">LOGIN TO DASHBOARD</button>
-  <p id="loginMessage"></p>
-</div>
-
-<div id="dashboard" class="hidden">
-
-<div class="card">
-  <div class="section-heading">
-    <div>
-      <h2>Welcome, Admin</h2>
-      <p id="adminEmail" class="small"></p>
+  <div id="dashboard" class="hidden">
+    <div class="card">
+      <div class="section-heading"><div><h2>Welcome, Admin</h2><p id="adminEmail" class="small"></p></div><button class="logout" id="logoutBtn">LOGOUT</button></div>
     </div>
-    <button class="logout" id="logoutBtn">LOGOUT</button>
+
+    <div class="stats">
+      <div class="stat"><p>Total Rooms</p><h2 id="totalRooms">0</h2></div>
+      <div class="stat"><p>Occupied</p><h2 id="occupiedRooms">0</h2></div>
+      <div class="stat"><p>Available</p><h2 id="availableRooms">0</h2></div>
+      <div class="stat"><p>Today's Income</p><h2 id="todayIncome">₹0</h2></div>
+      <div class="stat"><p>Today's Expense</p><h2 id="todayExpense">₹0</h2></div>
+      <div class="stat"><p>Today's Net</p><h2 id="todayNet">₹0</h2></div>
+      <div class="stat"><p>Booking Requests</p><h2 id="bookingCount">0</h2></div>
+    </div>
+
+    <div class="card">
+      <h2>Guest Check-in</h2><p class="small">Enter guest details and assign an available room</p>
+      <form id="checkinForm">
+        <div class="form-grid">
+          <div class="field"><label>Guest Name *</label><input id="guestName" required placeholder="Guest full name"></div>
+          <div class="field"><label>Mobile Number *</label><input id="guestPhone" type="tel" pattern="[0-9]{10}" maxlength="10" required placeholder="10 digit mobile number"></div>
+          <div class="field"><label>ID Proof Type</label><select id="idType"><option value="">Select ID proof</option><option>Aadhaar</option><option>Driving Licence</option><option>Voter ID</option><option>Passport</option><option>Other</option></select></div>
+          <div class="field"><label>Last 4 digits only (optional)</label><input id="idLast4" maxlength="4" pattern="[0-9]{4}" placeholder="Last 4 digits"></div>
+          <div class="field"><label>Room Number *</label><select id="roomSelect" required><option value="">Select available room</option></select></div>
+          <div class="field"><label>Number of Guests *</label><input id="guestCount" type="number" min="1" max="10" value="1" required></div>
+          <div class="field"><label>Check-in Date *</label><input id="checkinDate" type="date" required></div>
+          <div class="field"><label>Check-in Time *</label><input id="checkinTime" type="time" required></div>
+          <div class="field"><label>Expected Check-out Date *</label><input id="checkoutDate" type="date" required></div>
+          <div class="field"><label>Expected Check-out Time *</label><input id="checkoutTime" type="time" required></div>
+          <div class="field"><label>Advance Amount (₹)</label><input id="advance" type="number" min="0" step="1" value="0" required></div>
+          <div class="field"><label>Payment Method</label><select id="paymentMethod"><option>Cash</option><option>GPay</option><option>Card</option></select></div>
+        </div>
+        <div class="summary">
+          <p><span>Room Rate / Day</span><strong id="rateDisplay">₹0</strong></p>
+          <p><span>Number of Days</span><strong id="daysDisplay">0</strong></p>
+          <p><span>Estimated Room Amount</span><strong id="amountDisplay">₹0</strong></p>
+          <p><span>Advance</span><strong id="advanceDisplay">₹0</strong></p>
+          <p><span>Balance</span><strong id="balanceDisplay">₹0</strong></p>
+        </div>
+        <button id="checkinBtn" type="submit">CONFIRM CHECK-IN</button><p id="checkinMessage"></p>
+      </form>
+    </div>
+
+    <div class="card"><h2>Active Guests</h2><p class="small">Currently checked-in guests</p><div id="guestList" class="guest-grid"></div><p id="guestMessage" class="small"></p></div>
+
+    <div class="card">
+      <h2>Daily Expense Management</h2><p class="small">Record hotel daily expenses</p>
+      <form id="expenseForm">
+        <div class="form-grid">
+          <div class="field"><label>Expense Date *</label><input type="date" id="expenseDate" required></div>
+          <div class="field"><label>Category *</label><select id="expenseCategory" required><option value="">Select Category</option><option>Food</option><option>Salary</option><option>Electricity</option><option>Water</option><option>Maintenance</option><option>Cleaning</option><option>Purchase</option><option>Fuel</option><option>Other</option></select></div>
+          <div class="field"><label>Description *</label><input id="expenseDescription" required maxlength="180" placeholder="Enter expense details"></div>
+          <div class="field"><label>Amount (₹) *</label><input type="number" id="expenseAmount" min="0.01" step="0.01" required placeholder="Enter amount"></div>
+          <div class="field full"><label>Payment Method *</label><select id="expenseMethod" required><option>Cash</option><option>GPay</option><option>Card</option><option>Bank Transfer</option></select></div>
+        </div>
+        <button type="submit" id="expenseBtn">SAVE EXPENSE</button><p id="expenseMessage"></p>
+      </form>
+    </div>
+
+    <div class="card"><h2>Expense History</h2><div id="expenseList" class="guest-grid"></div><p id="expenseHistoryMessage" class="small"></p></div>
+
+    <div class="card">
+      <h2>Monthly Income & Expense Report</h2>
+      <label for="reportMonth">Select Month</label><input type="month" id="reportMonth">
+      <div class="report-summary">
+        <div class="report-box"><span>Monthly Income (collections)</span><strong id="monthlyIncome">₹0</strong></div>
+        <div class="report-box"><span>Monthly Expenses</span><strong id="monthlyExpense">₹0</strong></div>
+        <div class="report-box"><span>Monthly Net</span><strong id="monthlyNet">₹0</strong></div>
+      </div>
+      <p class="small">Income is money actually collected (advance and checkout payments), grouped by payment date. It is not the full room booking value.</p>
+    </div>
+
+    <div class="card">
+      <h2>Room Management</h2><p class="small">21 rooms – Room 8 to Room 28</p>
+      <button id="setupRooms">INITIALIZE 21 ROOMS</button><p id="roomMessage"></p><div id="roomList" class="room-grid"></div>
+    </div>
+    <p id="status"></p>
   </div>
-</div>
-
-<div class="stats">
-  <div class="stat"><p>Total Rooms</p><h2 id="totalRooms">0</h2></div>
-  <div class="stat"><p>Occupied</p><h2 id="occupiedRooms">0</h2></div>
-  <div class="stat"><p>Available</p><h2 id="availableRooms">0</h2></div>
-  <div class="stat"><p>Today's Income</p><h2 id="todayIncome">₹0</h2></div>
-  <div class="stat"><p>Booking Requests</p><h2 id="bookingCount">0</h2></div>
-</div>
-
-<div class="card">
-  <h2>Guest Check-in</h2>
-  <p class="small">Enter guest details and assign an available room</p>
-
-  <form id="checkinForm">
-    <div class="form-grid">
-
-      <div class="field">
-        <label>Guest Name *</label>
-        <input id="guestName" required placeholder="Guest full name">
-      </div>
-
-      <div class="field">
-        <label>Mobile Number *</label>
-        <input id="guestPhone" type="tel" pattern="[0-9]{10}" maxlength="10" required placeholder="10 digit mobile number">
-      </div>
-
-      <div class="field">
-        <label>ID Proof Type</label>
-        <select id="idType">
-          <option value="">Select ID proof</option>
-          <option value="Aadhaar">Aadhaar</option>
-          <option value="Driving Licence">Driving Licence</option>
-          <option value="Voter ID">Voter ID</option>
-          <option value="Passport">Passport</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Last 4 digits only (optional)</label>
-        <input id="idLast4" maxlength="4" pattern="[0-9]{4}" placeholder="Last 4 digits">
-      </div>
-
-      <div class="field">
-        <label>Room Number *</label>
-        <select id="roomSelect" required>
-          <option value="">Select available room</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Number of Guests *</label>
-        <input id="guestCount" type="number" min="1" max="10" value="1" required>
-      </div>
-
-      <div class="field">
-        <label>Check-in Date *</label>
-        <input id="checkinDate" type="date" required>
-      </div>
-
-      <div class="field">
-        <label>Check-in Time *</label>
-        <input id="checkinTime" type="time" required>
-      </div>
-
-      <div class="field">
-        <label>Expected Check-out Date *</label>
-        <input id="checkoutDate" type="date" required>
-      </div>
-
-      <div class="field">
-        <label>Expected Check-out Time *</label>
-        <input id="checkoutTime" type="time" required>
-      </div>
-
-      <div class="field">
-        <label>Advance Amount (₹)</label>
-        <input id="advance" type="number" min="0" step="1" value="0" required>
-      </div>
-
-      <div class="field">
-        <label>Payment Method</label>
-        <select id="paymentMethod">
-          <option value="Cash">Cash</option>
-          <option value="GPay">GPay</option>
-          <option value="Card">Card</option>
-        </select>
-      </div>
-
-    </div>
-
-    <div class="summary">
-      <p><span>Room Rate / Day</span><strong id="rateDisplay">₹0</strong></p>
-      <p><span>Number of Days</span><strong id="daysDisplay">0</strong></p>
-      <p><span>Estimated Room Amount</span><strong id="amountDisplay">₹0</strong></p>
-      <p><span>Advance</span><strong id="advanceDisplay">₹0</strong></p>
-      <p><span>Balance</span><strong id="balanceDisplay">₹0</strong></p>
-    </div>
-
-    <button id="checkinBtn" type="submit">CONFIRM CHECK-IN</button>
-    <p id="checkinMessage"></p>
-  </form>
-</div>
-
-<div class="card">
-  <div class="section-heading">
-    <div>
-      <h2>Active Guests</h2>
-      <p class="small">Currently checked-in guests</p>
-    </div>
-  </div>
-  <div id="guestList" class="guest-grid"></div>
-  <p id="guestMessage" class="small"></p>
-</div>
-<div class="card">
-  <h2>Room Management</h2>
-<div class="card">
-  <h2>Room Management</h2>
-  <p class="small">21 rooms – Room 8 to Room 28</p>
-  <button id="setupRooms">INITIALIZE 21 ROOMS</button>
-  <p id="roomMessage"></p>
-  <div id="roomList" class="room-grid"></div>
-</div>
-
-<p id="status"></p>
-</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyCpQhwNOFAjysHIOd_-7JkE2_FlKyHk9WI",
@@ -233,459 +155,239 @@ const firebaseConfig = {
   appId: "1:235249170055:web:4d0d8f50c4fac5f070ea22",
   measurementId: "G-1Z9LYZE1CE"
 };
-
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-const $ = id => document.getElementById(id);
-const money = n => "₹" + Number(n || 0).toLocaleString("en-IN");
-
-let unsubscribeRooms = null;
-let unsubscribePayments = null;
-let unsubscribeBookings = null;
-let unsubscribeStays = null;
-let currentRooms = [];
+const auth=firebase.auth();
+const db=firebase.firestore();
+const $=id=>document.getElementById(id);
+const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
+let unsubscribeRooms=null,unsubscribePayments=null,unsubscribeBookings=null,unsubscribeStays=null,unsubscribeExpenses=null;
+let currentRooms=[],allPayments=[],allExpenses=[];
 
 function localDate(){
-  const d = new Date();
-  const offset = d.getTimezoneOffset();
-  return new Date(d.getTime() - offset * 60000).toISOString().slice(0,10);
+  const d=new Date(),offset=d.getTimezoneOffset();
+  return new Date(d.getTime()-offset*60000).toISOString().slice(0,10);
 }
-
 function dateDays(start,end){
-  const a = new Date(start + "T00:00:00");
-  const b = new Date(end + "T00:00:00");
+  const a=new Date(start+"T00:00:00"),b=new Date(end+"T00:00:00");
   return Math.ceil((b-a)/86400000);
 }
-
+function refreshFinancials(){
+  const today=localDate();
+  const income=allPayments.filter(p=>p.date===today).reduce((s,p)=>s+Number(p.amount||0),0);
+  const expense=allExpenses.filter(e=>e.date===today).reduce((s,e)=>s+Number(e.amount||0),0);
+  $("todayIncome").innerText=money(income);
+  $("todayExpense").innerText=money(expense);
+  $("todayNet").innerText=money(income-expense);
+  renderMonthlyReport();
+}
+function renderMonthlyReport(){
+  const month=$("reportMonth").value||localDate().slice(0,7);
+  const income=allPayments.filter(p=>(p.date||"").slice(0,7)===month).reduce((s,p)=>s+Number(p.amount||0),0);
+  const expense=allExpenses.filter(e=>(e.date||"").slice(0,7)===month).reduce((s,e)=>s+Number(e.amount||0),0);
+  $("monthlyIncome").innerText=money(income);
+  $("monthlyExpense").innerText=money(expense);
+  $("monthlyNet").innerText=money(income-expense);
+}
 function getEstimate(){
-  const room = currentRooms.find(r => r.id === $("roomSelect").value);
-  const rate = room ? Number(room.rate) : 0;
-  const start = $("checkinDate").value;
-  const end = $("checkoutDate").value;
-  const days = start && end && end > start ? dateDays(start,end) : 0;
-  const amount = rate * days;
-  const advance = Number($("advance").value || 0);
-
-  $("rateDisplay").innerText = money(rate);
-  $("daysDisplay").innerText = days;
-  $("amountDisplay").innerText = money(amount);
-  $("advanceDisplay").innerText = money(advance);
-  $("balanceDisplay").innerText = money(amount-advance);
-
+  const room=currentRooms.find(r=>r.id===$("roomSelect").value);
+  const rate=room?Number(room.rate):0,start=$("checkinDate").value,end=$("checkoutDate").value;
+  const days=start&&end&&end>start?dateDays(start,end):0;
+  const amount=rate*days,advance=Number($("advance").value||0);
+  $("rateDisplay").innerText=money(rate);$("daysDisplay").innerText=days;
+  $("amountDisplay").innerText=money(amount);$("advanceDisplay").innerText=money(advance);
+  $("balanceDisplay").innerText=money(amount-advance);
   return {room,rate,days,amount,advance};
 }
-
 ["roomSelect","checkinDate","checkoutDate","advance"].forEach(id=>{
-  $(id).addEventListener("change",getEstimate);
-  $(id).addEventListener("input",getEstimate);
+  $(id).addEventListener("change",getEstimate);$(id).addEventListener("input",getEstimate);
 });
+$("checkinDate").value=localDate();
+$("checkoutDate").value=localDate();
+$("checkinTime").value="12:00";$("checkoutTime").value="11:00";
+$("expenseDate").value=localDate();$("reportMonth").value=localDate().slice(0,7);
+$("reportMonth").addEventListener("change",renderMonthlyReport);
 
-$("checkinDate").value = localDate();
-$("checkoutDate").value = localDate();
-$("checkinTime").value = "12:00";
-$("checkoutTime").value = "11:00";
-
-$("loginBtn").onclick = async () => {
-  const email = $("email").value.trim();
-  const password = $("password").value;
-
-  if(!email || !password){
-    $("loginMessage").innerText = "Enter email and password";
-    return;
-  }
-
-  try{
-    await auth.signInWithEmailAndPassword(email,password);
-    $("loginMessage").innerText = "";
-  }catch(error){
-    $("loginMessage").innerText = error.message;
-  }
+$("loginBtn").onclick=async()=>{
+  const email=$("email").value.trim(),password=$("password").value;
+  if(!email||!password){$("loginMessage").innerText="Enter email and password";return;}
+  try{await auth.signInWithEmailAndPassword(email,password);$("loginMessage").innerText="";}
+  catch(error){$("loginMessage").innerText=error.message;}
 };
-
 auth.onAuthStateChanged(user=>{
-  if(user){
-    $("loginBox").classList.add("hidden");
-    $("dashboard").classList.remove("hidden");
-    $("adminEmail").innerText = user.email || "Admin";
-    startDashboard();
-  }else{
-    stopDashboard();
-    $("loginBox").classList.remove("hidden");
-    $("dashboard").classList.add("hidden");
-  }
+  if(user){$("loginBox").classList.add("hidden");$("dashboard").classList.remove("hidden");$("adminEmail").innerText=user.email||"Admin";startDashboard();}
+  else{stopDashboard();$("loginBox").classList.remove("hidden");$("dashboard").classList.add("hidden");}
 });
 
 function startDashboard(){
-
-  unsubscribeRooms = db.collection("rooms").onSnapshot(snapshot=>{
-    currentRooms = snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-
-    const occupied = currentRooms.filter(r=>r.status==="Occupied").length;
-    $("totalRooms").innerText = currentRooms.length;
-    $("occupiedRooms").innerText = occupied;
-    $("availableRooms").innerText = currentRooms.length-occupied;
-
-    const select = $("roomSelect");
-    const previous = select.value;
-    select.innerHTML = '<option value="">Select available room</option>';
-
-    currentRooms.filter(r=>r.status==="Available")
-      .sort((a,b)=>a.number-b.number).forEach(room=>{
-        const option = document.createElement("option");
-        option.value = room.id;
-        option.textContent = "Room "+room.number+" – "+room.type+" – "+money(room.rate);
-        select.appendChild(option);
-      });
-
-    if([...select.options].some(o=>o.value===previous)) select.value=previous;
-
-    const list = $("roomList");
-    list.innerHTML = "";
-
-    currentRooms.sort((a,b)=>a.number-b.number).forEach(room=>{
-      const div = document.createElement("div");
-      div.className = "room";
-
-      const info = document.createElement("div");
-      const title = document.createElement("strong");
-      title.textContent = "Room "+room.number;
-
-      const type = document.createElement("span");
-      type.textContent = room.type;
-
-      const rate = document.createElement("span");
-      rate.textContent = money(room.rate)+" / day";
-
-      const status = document.createElement("span");
-      status.textContent = room.status;
-      status.className = room.status==="Occupied" ? "occupied" : "available";
-
-      info.append(title,type,rate,status);
-      div.append(info);
-      list.appendChild(div);
+  unsubscribeRooms=db.collection("rooms").onSnapshot(snapshot=>{
+    currentRooms=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+    const occupied=currentRooms.filter(r=>r.status==="Occupied").length;
+    $("totalRooms").innerText=currentRooms.length;$("occupiedRooms").innerText=occupied;$("availableRooms").innerText=currentRooms.length-occupied;
+    const select=$("roomSelect"),previous=select.value;
+    select.innerHTML='<option value="">Select available room</option>';
+    currentRooms.filter(r=>r.status==="Available").sort((a,b)=>a.number-b.number).forEach(room=>{
+      const option=document.createElement("option");option.value=room.id;
+      option.textContent="Room "+room.number+" – "+room.type+" – "+money(room.rate);select.appendChild(option);
     });
-
+    if([...select.options].some(o=>o.value===previous))select.value=previous;
+    const list=$("roomList");list.innerHTML="";
+    [...currentRooms].sort((a,b)=>a.number-b.number).forEach(room=>{
+      const div=document.createElement("div");div.className="room";
+      const info=document.createElement("div"),title=document.createElement("strong"),type=document.createElement("span"),rate=document.createElement("span"),status=document.createElement("span");
+      title.textContent="Room "+room.number;type.textContent=room.type;rate.textContent=money(room.rate)+" / day";
+      status.textContent=room.status;status.className=room.status==="Occupied"?"occupied":"available";
+      info.append(title,type,rate,status);div.append(info);list.appendChild(div);
+    });
     getEstimate();
-  },error=>{
-    $("status").innerText = "Rooms error: "+error.message;
-  });
+  },error=>{$("status").innerText="Rooms error: "+error.message;});
 
-  unsubscribePayments = db.collection("payments").onSnapshot(snapshot=>{
-    const today = localDate();
-    let total = 0;
-    snapshot.forEach(doc=>{
-      const data = doc.data();
-      if(data.date===today) total += Number(data.amount||0);
-    });
-    $("todayIncome").innerText = money(total);
-  },error=>{
-    $("status").innerText = "Payments error: "+error.message;
-  });
+  unsubscribePayments=db.collection("payments").onSnapshot(snapshot=>{
+    allPayments=snapshot.docs.map(doc=>doc.data());refreshFinancials();
+  },error=>{$("status").innerText="Payments error: "+error.message;});
 
-  unsubscribeBookings = db.collection("bookingRequests").onSnapshot(snapshot=>{
-    $("bookingCount").innerText = snapshot.size;
-  },error=>{
-    $("status").innerText = "Bookings error: "+error.message;
-  });
+  unsubscribeBookings=db.collection("bookingRequests").onSnapshot(snapshot=>{
+    $("bookingCount").innerText=snapshot.size;
+  },error=>{$("status").innerText="Bookings error: "+error.message;});
 
-  unsubscribeStays = db.collection("stays")
-    .where("status","==","Checked-in")
-    .onSnapshot(snapshot=>{
-      renderGuests(snapshot);
-    },error=>{
-      $("guestMessage").innerText = "Guest records: "+error.message;
-    });
+  unsubscribeStays=db.collection("stays").where("status","==","Checked-in").onSnapshot(snapshot=>{
+    renderGuests(snapshot);
+  },error=>{$("guestMessage").innerText="Guest records: "+error.message;});
+
+  unsubscribeExpenses=db.collection("expenses").onSnapshot(snapshot=>{
+    allExpenses=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
+    renderExpenses();
+    refreshFinancials();
+  },error=>{$("expenseHistoryMessage").innerText="Expense records: "+error.message;});
 }
-
 function renderGuests(snapshot){
-  const list = $("guestList");
-  list.innerHTML = "";
-
-  if(snapshot.empty){
-    $("guestMessage").innerText = "No active guests currently.";
-    return;
-  }
-
-  $("guestMessage").innerText = "";
-
+  const list=$("guestList");list.innerHTML="";
+  if(snapshot.empty){$("guestMessage").innerText="No active guests currently.";return;}
+  $("guestMessage").innerText="";
   snapshot.docs.forEach(doc=>{
-    const stay = doc.data();
-    const div = document.createElement("div");
-    div.className = "guest";
-
-    const name = document.createElement("strong");
-    name.textContent = stay.guestName;
-
-    const details = document.createElement("span");
-    details.textContent = "Room "+stay.roomNumber+" · "+stay.roomType;
-
-    const phone = document.createElement("span");
-    phone.textContent = "Mobile: "+stay.phone;
-
-    const dates = document.createElement("span");
-    dates.textContent = "Check-in: "+stay.checkinDate+" "+stay.checkinTime+
-      " | Expected checkout: "+stay.checkoutDate+" "+stay.checkoutTime;
-
-    const balance = document.createElement("span");
-    balance.textContent = "Balance: "+money(stay.balance);
-
-    const button = document.createElement("button");
-    button.textContent = "CHECK OUT";
-    button.onclick = ()=>checkoutGuest(doc.id,stay);
-
-    div.append(name,details,phone,dates,balance,button);
-    list.appendChild(div);
+    const stay=doc.data(),div=document.createElement("div");div.className="guest";
+    const name=document.createElement("strong"),details=document.createElement("span"),phone=document.createElement("span"),dates=document.createElement("span"),balance=document.createElement("span"),button=document.createElement("button");
+    name.textContent=stay.guestName;details.textContent="Room "+stay.roomNumber+" · "+stay.roomType;
+    phone.textContent="Mobile: "+stay.phone;
+    dates.textContent="Check-in: "+stay.checkinDate+" "+stay.checkinTime+" | Expected checkout: "+stay.checkoutDate+" "+stay.checkoutTime;
+    balance.textContent="Balance: "+money(stay.balance);button.textContent="CHECK OUT";button.onclick=()=>checkoutGuest(doc.id,stay);
+    div.append(name,details,phone,dates,balance,button);list.appendChild(div);
   });
 }
-
-$("checkinForm").onsubmit = async e=>{
+function renderExpenses(){
+  const list=$("expenseList");list.innerHTML="";
+  const sorted=[...allExpenses].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  if(!sorted.length){$("expenseHistoryMessage").innerText="No expense records yet.";return;}
+  $("expenseHistoryMessage").innerText="Showing "+sorted.length+" expense record(s).";
+  sorted.slice(0,100).forEach(item=>{
+    const div=document.createElement("div");div.className="expense";
+    const title=document.createElement("strong"),date=document.createElement("span"),category=document.createElement("span"),desc=document.createElement("span"),amount=document.createElement("span"),method=document.createElement("span");
+    title.textContent=money(item.amount);date.textContent="Date: "+(item.date||"");
+    category.textContent="Category: "+(item.category||"");desc.textContent=item.description||"";
+    method.textContent="Payment: "+(item.method||"");amount.textContent=""; 
+    div.append(title,date,category,desc,method);list.appendChild(div);
+  });
+}
+$("expenseForm").onsubmit=async e=>{
   e.preventDefault();
-
-  const message = $("checkinMessage");
-  const button = $("checkinBtn");
-  const estimate = getEstimate();
-
-  const guestName = $("guestName").value.trim();
-  const phone = $("guestPhone").value.trim();
-  const start = $("checkinDate").value;
-  const end = $("checkoutDate").value;
-  const checkinTime = $("checkinTime").value;
-  const checkoutTime = $("checkoutTime").value;
-  const advance = Number($("advance").value || 0);
-
-  if(!estimate.room){
-    message.innerText = "Please select an available room.";
-    return;
-  }
-
-  if(!guestName || !/^[0-9]{10}$/.test(phone)){
-    message.innerText = "Enter guest name and valid 10 digit mobile number.";
-    return;
-  }
-
-  if(!start || !end || end<=start || !checkinTime || !checkoutTime){
-    message.innerText = "Please enter valid check-in and checkout dates and times.";
-    return;
-  }
-
-  if(estimate.days<1 || advance<0 || advance>estimate.amount){
-    message.innerText = "Check the dates and advance amount.";
-    return;
-  }
-
-  button.disabled = true;
-  message.innerText = "Saving check-in...";
-
+  const date=$("expenseDate").value,category=$("expenseCategory").value,description=$("expenseDescription").value.trim();
+  const amount=Number($("expenseAmount").value),method=$("expenseMethod").value,button=$("expenseBtn");
+  if(!date||!category||!description||!Number.isFinite(amount)||amount<=0){$("expenseMessage").innerText="Please enter all valid expense details.";return;}
+  button.disabled=true;$("expenseMessage").innerText="Saving expense...";
   try{
-    const stayRef = db.collection("stays").doc();
-    const paymentRef = db.collection("payments").doc();
-    const roomRef = db.collection("rooms").doc(estimate.room.id);
-
-    await db.runTransaction(async transaction=>{
-      const roomDoc = await transaction.get(roomRef);
-
-      if(!roomDoc.exists || roomDoc.data().status!=="Available"){
-        throw new Error("This room is no longer available. Please select another room.");
-      }
-
-      const stayData = {
-        guestName,
-        phone,
-        idType:$("idType").value || "",
-        idLast4:$("idLast4").value || "",
-        guestCount:Number($("guestCount").value),
-        roomId:estimate.room.id,
-        roomNumber:estimate.room.number,
-        roomType:estimate.room.type,
-        rate:estimate.rate,
-        days:estimate.days,
-        totalAmount:estimate.amount,
-        advance,
-        balance:estimate.amount-advance,
-        paymentMethod:$("paymentMethod").value,
-        checkinDate:start,
-        checkinTime,
-        checkoutDate:end,
-        checkoutTime,
-        status:"Checked-in",
-        createdAt:firebase.firestore.FieldValue.serverTimestamp()
-      };
-
-      transaction.set(stayRef,stayData);
-
-      transaction.update(roomRef,{
-        status:"Occupied",
-        currentStayId:stayRef.id
-      });
-
-      if(advance>0){
-        transaction.set(paymentRef,{
-          stayId:stayRef.id,
-          roomNumber:estimate.room.number,
-          amount:advance,
-          method:$("paymentMethod").value,
-          date:localDate(),
-          type:"Advance",
-          createdAt:firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }
+    await db.collection("expenses").add({
+      date,category,description,amount,method,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      createdBy:auth.currentUser?auth.currentUser.uid:""
     });
+    $("expenseForm").reset();$("expenseDate").value=localDate();
+    $("expenseMessage").innerText="Expense saved successfully!";
+  }catch(error){$("expenseMessage").innerText="Could not save: "+error.message;}
+  finally{button.disabled=false;}
+};
 
-    message.innerText = "Guest checked in successfully!";
-    $("checkinForm").reset();
-    $("checkinDate").value=localDate();
-    $("checkoutDate").value=localDate();
-    $("checkinTime").value="12:00";
-    $("checkoutTime").value="11:00";
-    $("guestCount").value="1";
-    $("advance").value="0";
-    getEstimate();
-
-  }catch(error){
-    message.innerText = error.message;
-  }finally{
-    button.disabled = false;
-  }
+$("checkinForm").onsubmit=async e=>{
+  e.preventDefault();
+  const message=$("checkinMessage"),button=$("checkinBtn"),estimate=getEstimate();
+  const guestName=$("guestName").value.trim(),phone=$("guestPhone").value.trim();
+  const start=$("checkinDate").value,end=$("checkoutDate").value,checkinTime=$("checkinTime").value,checkoutTime=$("checkoutTime").value;
+  const advance=Number($("advance").value||0);
+  if(!estimate.room){message.innerText="Please select an available room.";return;}
+  if(!guestName||!/^[0-9]{10}$/.test(phone)){message.innerText="Enter guest name and valid 10 digit mobile number.";return;}
+  if(!start||!end||end<=start||!checkinTime||!checkoutTime){message.innerText="Please enter valid check-in and checkout dates and times.";return;}
+  if(estimate.days<1||advance<0||advance>estimate.amount){message.innerText="Check the dates and advance amount.";return;}
+  button.disabled=true;message.innerText="Saving check-in...";
+  try{
+    const stayRef=db.collection("stays").doc(),paymentRef=db.collection("payments").doc(),roomRef=db.collection("rooms").doc(estimate.room.id);
+    await db.runTransaction(async transaction=>{
+      const roomDoc=await transaction.get(roomRef);
+      if(!roomDoc.exists||roomDoc.data().status!=="Available")throw new Error("This room is no longer available. Please select another room.");
+      const stayData={
+        guestName,phone,idType:$("idType").value||"",idLast4:$("idLast4").value||"",
+        guestCount:Number($("guestCount").value),roomId:estimate.room.id,roomNumber:estimate.room.number,roomType:estimate.room.type,
+        rate:estimate.rate,days:estimate.days,totalAmount:estimate.amount,advance,balance:estimate.amount-advance,
+        paymentMethod:$("paymentMethod").value,checkinDate:start,checkinTime,checkoutDate:end,checkoutTime,
+        status:"Checked-in",createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      };
+      transaction.set(stayRef,stayData);transaction.update(roomRef,{status:"Occupied",currentStayId:stayRef.id});
+      if(advance>0)transaction.set(paymentRef,{
+        stayId:stayRef.id,roomNumber:estimate.room.number,amount:advance,method:$("paymentMethod").value,
+        date:localDate(),type:"Advance",createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+    message.innerText="Guest checked in successfully!";$("checkinForm").reset();
+    $("checkinDate").value=localDate();$("checkoutDate").value=localDate();
+    $("checkinTime").value="12:00";$("checkoutTime").value="11:00";$("guestCount").value="1";$("advance").value="0";getEstimate();
+  }catch(error){message.innerText=error.message;}
+  finally{button.disabled=false;}
 };
 
 async function checkoutGuest(stayId,stay){
-  const remaining = Math.max(0,Number(stay.balance||0));
-
-  let paid = 0;
-  let method = "Cash";
-
+  const remaining=Math.max(0,Number(stay.balance||0));let paid=0,method="Cash";
   if(remaining>0){
-    const answer = prompt(
-      "Remaining balance: "+money(remaining)+
-      "\nEnter amount received now (enter 0 if unpaid):"
-    );
-
-    if(answer===null) return;
-
-    paid = Number(answer);
-
-    if(!Number.isFinite(paid) || paid<0 || paid>remaining){
-      alert("Enter a valid amount up to "+money(remaining));
-      return;
-    }
-
-    if(paid>0){
-      method = prompt("Payment method: Cash, GPay, or Card","Cash");
-      if(!["Cash","GPay","Card"].includes(method)){
-        alert("Enter Cash, GPay, or Card.");
-        return;
-      }
-    }
+    const answer=prompt("Remaining balance: "+money(remaining)+"\nEnter amount received now (enter 0 if unpaid):");
+    if(answer===null)return;paid=Number(answer);
+    if(!Number.isFinite(paid)||paid<0||paid>remaining){alert("Enter a valid amount up to "+money(remaining));return;}
+    if(paid>0){method=prompt("Payment method: Cash, GPay, or Card","Cash");if(!["Cash","GPay","Card"].includes(method)){alert("Enter Cash, GPay, or Card.");return;}}
   }
-
-  if(!confirm("Confirm checkout for "+stay.guestName+" – Room "+stay.roomNumber+"?")) return;
-
+  if(!confirm("Confirm checkout for "+stay.guestName+" – Room "+stay.roomNumber+"?"))return;
   try{
-    const stayRef = db.collection("stays").doc(stayId);
-    const roomRef = db.collection("rooms").doc(stay.roomId);
-    const paymentRef = db.collection("payments").doc();
-
+    const stayRef=db.collection("stays").doc(stayId),roomRef=db.collection("rooms").doc(stay.roomId),paymentRef=db.collection("payments").doc();
     await db.runTransaction(async transaction=>{
-      const stayDoc = await transaction.get(stayRef);
-      const roomDoc = await transaction.get(roomRef);
-
-      if(!stayDoc.exists || stayDoc.data().status!=="Checked-in"){
-        throw new Error("This guest is already checked out.");
-      }
-
-      if(!roomDoc.exists || roomDoc.data().currentStayId!==stayId){
-        throw new Error("Room record does not match this guest. Please contact support.");
-      }
-
-      const latestBalance = Number(stayDoc.data().balance||0);
-
-      if(paid>latestBalance){
-        throw new Error("Payment exceeds the current balance.");
-      }
-
-      transaction.update(stayRef,{
-        status:"Checked-out",
-        balance:latestBalance-paid,
-        checkoutActualAt:firebase.firestore.FieldValue.serverTimestamp(),
-        checkoutPayment:paid
-      });
-
-      transaction.update(roomRef,{
-        status:"Available",
-        currentStayId:firebase.firestore.FieldValue.delete()
-      });
-
-      if(paid>0){
-        transaction.set(paymentRef,{
-          stayId,
-          roomNumber:stay.roomNumber,
-          amount:paid,
-          method,
-          date:localDate(),
-          type:"Checkout Balance",
-          createdAt:firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }
+      const stayDoc=await transaction.get(stayRef),roomDoc=await transaction.get(roomRef);
+      if(!stayDoc.exists||stayDoc.data().status!=="Checked-in")throw new Error("This guest is already checked out.");
+      if(!roomDoc.exists||roomDoc.data().currentStayId!==stayId)throw new Error("Room record does not match this guest. Please contact support.");
+      const latestBalance=Number(stayDoc.data().balance||0);
+      if(paid>latestBalance)throw new Error("Payment exceeds the current balance.");
+      transaction.update(stayRef,{status:"Checked-out",balance:latestBalance-paid,checkoutActualAt:firebase.firestore.FieldValue.serverTimestamp(),checkoutPayment:paid});
+      transaction.update(roomRef,{status:"Available",currentStayId:firebase.firestore.FieldValue.delete()});
+      if(paid>0)transaction.set(paymentRef,{stayId,roomNumber:stay.roomNumber,amount:paid,method,date:localDate(),type:"Checkout Balance",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     });
-
     alert("Guest checked out. Room is now available.");
-
-  }catch(error){
-    alert(error.message);
-  }
+  }catch(error){alert(error.message);}
 }
 
-$("setupRooms").onclick = async ()=>{
-  if(!confirm("Create 21 rooms from 8 to 28?")) return;
-
-  const button=$("setupRooms");
-  button.disabled=true;
-
+$("setupRooms").onclick=async()=>{
+  if(!confirm("Create 21 rooms from 8 to 28?"))return;
+  const button=$("setupRooms");button.disabled=true;
   try{
     const existing=await db.collection("rooms").get();
-
-    if(!existing.empty){
-      $("roomMessage").innerText="Room records already exist. No changes made.";
-      return;
-    }
-
+    if(!existing.empty){$("roomMessage").innerText="Room records already exist. No changes made.";return;}
     const batch=db.batch();
-
     for(let n=8;n<=28;n++){
       let type="Normal Single",rate=500;
-
-      if([15,16,17,26].includes(n)){type="Normal Double";rate=900}
-      else if([18,19].includes(n)){type="AC Single";rate=1000}
-      else if([27,28].includes(n)){type="AC Double";rate=1800}
-
-      batch.set(db.collection("rooms").doc("room-"+n),{
-        number:n,type,rate,status:"Available"
-      });
+      if([15,16,17,26].includes(n)){type="Normal Double";rate=900;}
+      else if([18,19].includes(n)){type="AC Single";rate=1000;}
+      else if([27,28].includes(n)){type="AC Double";rate=1800;}
+      batch.set(db.collection("rooms").doc("room-"+n),{number:n,type,rate,status:"Available"});
     }
-
-    await batch.commit();
-    $("roomMessage").innerText="21 rooms created successfully!";
-  }catch(error){
-    $("roomMessage").innerText=error.message;
-  }finally{
-    button.disabled=false;
-  }
+    await batch.commit();$("roomMessage").innerText="21 rooms created successfully!";
+  }catch(error){$("roomMessage").innerText=error.message;}
+  finally{button.disabled=false;}
 };
-
 function stopDashboard(){
-  if(unsubscribeRooms) unsubscribeRooms();
-  if(unsubscribePayments) unsubscribePayments();
-  if(unsubscribeBookings) unsubscribeBookings();
-  if(unsubscribeStays) unsubscribeStays();
-
-  unsubscribeRooms=null;
-  unsubscribePayments=null;
-  unsubscribeBookings=null;
-  unsubscribeStays=null;
+  [unsubscribeRooms,unsubscribePayments,unsubscribeBookings,unsubscribeStays,unsubscribeExpenses].forEach(unsub=>{if(typeof unsub==="function")unsub();});
+  unsubscribeRooms=unsubscribePayments=unsubscribeBookings=unsubscribeStays=unsubscribeExpenses=null;
 }
-
 $("logoutBtn").onclick=()=>auth.signOut();
 </script>
 </body>
