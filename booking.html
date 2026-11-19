@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PS Residency | Room Booking</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:white;font-family:Arial,sans-serif;padding:25px}
+.container{max-width:650px;margin:35px auto;background:#fff;color:#172033;padding:30px;border-radius:15px}
+h1{color:#b18a45;text-align:center}
+p{text-align:center;color:#777}
+label{display:block;margin-top:16px;font-weight:bold}
+input,select,textarea{width:100%;padding:13px;margin-top:7px;border:1px solid #ddd;border-radius:7px;font-size:15px;font-family:Arial}
+textarea{min-height:90px;resize:vertical}
+button{width:100%;padding:15px;margin-top:24px;background:#b18a45;color:white;border:0;border-radius:8px;font-weight:bold;font-size:16px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>PS RESIDENCY</h1>
+<p>Room Reservation Request</p>
+
+<form id="booking">
+
+<label>Guest Name</label>
+<input id="name" required placeholder="Enter your name">
+
+<label>Mobile Number</label>
+<input id="phone" type="tel" pattern="[0-9]{10}" required placeholder="10 digit mobile number">
+
+<label>Full Address</label>
+<textarea id="address" required placeholder="Enter your full address"></textarea>
+
+<label>City</label>
+<input id="city" required placeholder="Enter your city">
+
+<label>State</label>
+<input id="state" required placeholder="Enter your state">
+
+<label>PIN Code</label>
+<input id="pincode" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required placeholder="6 digit PIN code">
+
+<label>Check-in Date</label>
+<input id="checkin" type="date" required>
+
+<label>Check-out Date</label>
+<input id="checkout" type="date" required>
+
+<label>Room Type</label>
+<select id="room">
+<option>Single Room</option>
+<option>Double Room</option>
+<option>AC Single Room</option>
+<option>AC Double Room</option>
+</select>
+
+<label>Number of Guests</label>
+<input id="guests" type="number" min="1" max="10" value="1" required>
+
+<button type="submit">SEND BOOKING REQUEST</button>
+</form>
+
+<p id="message"></p>
+</div>
+
+<script>
+document.getElementById("booking").addEventListener("submit",function(e){
+e.preventDefault();
+
+const name=document.getElementById("name").value.trim();
+const phone=document.getElementById("phone").value.trim();
+const address=document.getElementById("address").value.trim();
+const city=document.getElementById("city").value.trim();
+const state=document.getElementById("state").value.trim();
+const pincode=document.getElementById("pincode").value.trim();
+const start=document.getElementById("checkin").value;
+const end=document.getElementById("checkout").value;
+const room=document.getElementById("room").value;
+const guests=document.getElementById("guests").value;
+
+if(end<=start){
+alert("Check-out date must be after check-in date");
+return;
+}
+
+const details =
+`Hello PS Residency! I want to request a booking.
+
+Guest Name: ${name}
+Mobile: ${phone}
+Address: ${address}
+City: ${city}
+State: ${state}
+PIN Code: ${pincode}
+Check-in: ${start}
+Check-out: ${end}
+Room: ${room}
+Guests: ${guests}`;
+
+const whatsappNumber="91XXXXXXXXXX";
+const url="https://wa.me/"+whatsappNumber+"?text="+encodeURIComponent(details);
+
+document.getElementById("message").innerText="Opening WhatsApp...";
+window.location.href=url;
+});
+</script>
+</body>
+</html>
