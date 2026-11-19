@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PS Residency | Management</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f4f6fa;color:#172033}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#101c35,#263d60)}
+.panel{background:white;padding:35px;border-radius:18px;width:100%;max-width:390px;box-shadow:0 15px 50px #0003}
+.logo{text-align:center;font-size:27px;font-weight:bold;color:#b28a45;margin-bottom:8px}
+.sub{text-align:center;color:#778;margin-bottom:28px}
+label{display:block;font-size:13px;margin:14px 0 7px}
+input{width:100%;padding:13px;border:1px solid #ddd;border-radius:8px;font-size:15px}
+button{border:0;background:#b28a45;color:white;padding:13px;border-radius:8px;cursor:pointer;font-weight:bold}
+.login button{width:100%;margin-top:22px}
+.error{color:#c33;font-size:13px;margin-top:12px}
+#dashboard{display:none}
+.sidebar{background:#14233d;color:white;width:240px;min-height:100vh;padding:25px 18px;position:fixed}
+.sidebar h2{color:#d6b16c;margin-bottom:35px}
+.sidebar p{padding:14px 10px;border-radius:8px;margin:5px 0;cursor:pointer}
+.sidebar p:hover{background:#293b59}
+.main{margin-left:240px;padding:30px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;gap:15px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{background:white;padding:22px;border-radius:13px;box-shadow:0 3px 15px #00000008}
+.card small{color:#778}
+.card h2{font-size:27px;margin-top:12px;color:#b28a45}
+.section{background:white;padding:25px;border-radius:13px;margin-top:25px}
+.logout{background:#b28a45}
+@media(max-width:800px){
+.sidebar{position:static;width:100%;min-height:auto}
+.sidebar p{display:inline-block;padding:9px}
+.main{margin:0;padding:18px}
+.cards{grid-template-columns:repeat(2,1fr)}
+.top{align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+<body>
+<div class="login" id="login">
+<div class="panel">
+<div class="logo">PS RESIDENCY</div>
+<div class="sub">Hotel Management System</div>
+<form id="loginForm">
+<label>Admin Email</label>
+<input id="email" type="email" placeholder="Enter admin email" required>
+<label>Password</label>
+<input id="password" type="password" placeholder="Enter password" required>
+<button type="submit">LOGIN</button>
+<div class="error" id="error"></div>
+</form>
+</div>
+</div>
+
+<div id="dashboard">
+<aside class="sidebar">
+<h2>PS RESIDENCY</h2>
+<p>▦ Dashboard</p>
+<p>▣ Room Management</p>
+<p>♙ Check In / Check Out</p>
+<p>₹ Income & Expenses</p>
+<p>▤ Reports</p>
+</aside>
+<main class="main">
+<div class="top">
+<div><h1>Dashboard</h1><p>Welcome to PS Residency Management</p></div>
+<button class="logout" onclick="logout()">Logout</button>
+</div>
+<div class="cards">
+<div class="card"><small>Total Rooms</small><h2>28</h2></div>
+<div class="card"><small>Occupied Rooms</small><h2>0</h2></div>
+<div class="card"><small>Available Rooms</small><h2>28</h2></div>
+<div class="card"><small>Today's Income</small><h2>₹0</h2></div>
+</div>
+<div class="section">
+<h2>Welcome, Admin!</h2>
+<p style="margin-top:12px;color:#778">Your hotel management dashboard is ready for setup.</p>
+</div>
+</main>
+</div>
+
+<script>
+const form=document.getElementById('loginForm');
+form.addEventListener('submit',function(e){
+e.preventDefault();
+document.getElementById('error').textContent='Firebase authentication setup pending.';
+});
+function logout(){
+document.getElementById('dashboard').style.display='none';
+document.getElementById('login').style.display='flex';
+}
+</script>
+</body>
+</html>
