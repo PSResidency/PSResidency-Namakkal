@@ -6,80 +6,305 @@
 <title>PS Residency | Admin Dashboard</title>
 
 <style>
+:root{
+  --bg:#101827;
+  --panel:#172338;
+  --gold:#c49a55;
+  --gold2:#e2bd7b;
+  --white:#ffffff;
+  --muted:#9aa9bd;
+  --green:#15966a;
+  --red:#d9534f;
+}
+
 *{box-sizing:border-box}
-body{margin:0;background:#101827;color:#fff;font-family:Arial;padding:20px}
-.container{max-width:1000px;margin:30px auto}
-.card{background:#fff;color:#172033;padding:22px;border-radius:12px;margin-bottom:18px}
-h1{color:#c39a55}
-h2{font-size:19px}
-input,button,select{width:100%;padding:13px;margin:8px 0;border-radius:7px;border:1px solid #ddd;font-size:15px}
-button{background:#b18a45;color:white;border:0;font-weight:bold;cursor:pointer}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.stat{background:#f3f4f6;padding:18px;border-radius:9px}
-.stat h2{color:#b18a45;font-size:26px;margin:8px 0}
-.small{color:#777;font-size:13px}
-.hidden{display:none}
-.room{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #ddd;color:#172033;gap:10px}
-.room button{width:auto;padding:9px;margin:0}
-#status{color:#b18a45;font-weight:bold}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--white);
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+}
+
+.container{
+  max-width:1250px;
+  width:94%;
+  margin:35px auto;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+  flex-wrap:wrap;
+  gap:15px;
+}
+
+.brand h1{
+  color:var(--gold2);
+  margin:0;
+  font-size:30px;
+  letter-spacing:2px;
+}
+
+.brand p{
+  color:var(--muted);
+  margin:7px 0 0;
+  font-size:13px;
+  letter-spacing:2px;
+}
+
+.card{
+  background:#fff;
+  color:#172033;
+  border-radius:15px;
+  padding:25px;
+  margin-bottom:22px;
+  box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
+
+h2{
+  margin-top:0;
+  font-size:20px;
+}
+
+input,button{
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #ddd;
+  font-size:15px;
+}
+
+button{
+  background:var(--gold);
+  color:white;
+  border:0;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  background:#9f773b;
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.hidden{display:none!important}
+
+.login-wrap{
+  max-width:450px;
+  margin:80px auto;
+}
+
+.login-wrap h2{
+  text-align:center;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:16px;
+  margin-bottom:22px;
+}
+
+.stat{
+  background:#fff;
+  color:#172033;
+  padding:23px;
+  border-radius:13px;
+  min-height:130px;
+  box-shadow:0 8px 25px rgba(0,0,0,.12);
+}
+
+.stat p{
+  color:#718096;
+  margin:0;
+  font-size:14px;
+}
+
+.stat h2{
+  color:#b18a45;
+  font-size:30px;
+  margin:15px 0 0;
+}
+
+.small{
+  color:#788397;
+  font-size:13px;
+}
+
+.room-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin-top:20px;
+}
+
+.room{
+  border:1px solid #e4e8ee;
+  border-radius:11px;
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  background:#fff;
+}
+
+.room-info strong{
+  display:block;
+  font-size:16px;
+  margin-bottom:6px;
+}
+
+.room-info span{
+  display:block;
+  color:#788397;
+  font-size:13px;
+  margin-top:4px;
+}
+
+.room button{
+  width:auto;
+  min-width:115px;
+  padding:10px;
+  margin:0;
+  font-size:12px;
+}
+
+.available{
+  color:var(--green)!important;
+  font-weight:bold;
+}
+
+.occupied{
+  color:var(--red)!important;
+  font-weight:bold;
+}
+
+.logout{
+  width:auto;
+  min-width:120px;
+  background:#26364d;
+}
+
+.section-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+#status,#roomMessage,#loginMessage{
+  font-weight:bold;
+  color:#b18a45;
+  overflow-wrap:anywhere;
+}
+
+@media(max-width:1000px){
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .room-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:600px){
+  .container{
+    width:94%;
+    margin:20px auto;
+  }
+
+  .brand h1{font-size:24px}
+  .card{padding:18px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat{padding:15px;min-height:105px}
+  .stat h2{font-size:23px}
+  .room-grid{grid-template-columns:1fr}
+  .room{align-items:flex-start}
+  .room button{min-width:105px}
+  .logout{width:100%}
+  .login-wrap{margin:35px auto}
+}
 </style>
 </head>
 
 <body>
 <div class="container">
 
-<h1>PS RESIDENCY</h1>
-<p>ADMIN MANAGEMENT DASHBOARD</p>
+<div class="header">
+  <div class="brand">
+    <h1>PS RESIDENCY</h1>
+    <p>ADMIN MANAGEMENT SYSTEM</p>
+  </div>
+</div>
 
-<div class="card" id="loginBox">
-<h2>Admin Login</h2>
-<input id="email" type="email" placeholder="Admin Email" required>
-<input id="password" type="password" placeholder="Admin Password" required>
-<button id="loginBtn">LOGIN</button>
-<p id="loginMessage"></p>
+<div class="card login-wrap" id="loginBox">
+  <h2>Admin Login</h2>
+  <p class="small">Sign in to manage PS Residency</p>
+  <input id="email" type="email" placeholder="Admin Email" required>
+  <input id="password" type="password" placeholder="Admin Password" required>
+  <button id="loginBtn">LOGIN TO DASHBOARD</button>
+  <p id="loginMessage"></p>
 </div>
 
 <div id="dashboard" class="hidden">
 
-<div class="card">
-<h2>Welcome, Admin</h2>
-<p id="adminEmail" class="small"></p>
-<button id="logoutBtn">LOGOUT</button>
+  <div class="card">
+    <div class="section-heading">
+      <div>
+        <h2>Welcome, Admin</h2>
+        <p id="adminEmail" class="small"></p>
+      </div>
+      <button class="logout" id="logoutBtn">LOGOUT</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <p>Total Rooms</p>
+      <h2 id="totalRooms">0</h2>
+    </div>
+    <div class="stat">
+      <p>Occupied Rooms</p>
+      <h2 id="occupiedRooms">0</h2>
+    </div>
+    <div class="stat">
+      <p>Available Rooms</p>
+      <h2 id="availableRooms">0</h2>
+    </div>
+    <div class="stat">
+      <p>Today's Income</p>
+      <h2 id="todayIncome">₹0</h2>
+    </div>
+    <div class="stat">
+      <p>Booking Requests</p>
+      <h2 id="bookingCount">0</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-heading">
+      <div>
+        <h2>Room Management</h2>
+        <p class="small">Manage all 21 rooms from one place</p>
+      </div>
+    </div>
+
+    <button id="setupRooms">INITIALIZE 21 ROOMS</button>
+    <p id="roomMessage"></p>
+    <div id="roomList" class="room-grid"></div>
+  </div>
+
+  <p id="status"></p>
 </div>
 
-<div class="stats">
-<div class="stat">
-<p>Total Rooms</p>
-<h2 id="totalRooms">0</h2>
-</div>
-<div class="stat">
-<p>Occupied</p>
-<h2 id="occupiedRooms">0</h2>
-</div>
-<div class="stat">
-<p>Available</p>
-<h2 id="availableRooms">0</h2>
-</div>
-<div class="stat">
-<p>Today's Income</p>
-<h2 id="todayIncome">₹0</h2>
-</div>
-<div class="stat">
-<p>Booking Requests</p>
-<h2 id="bookingCount">0</h2>
-</div>
-</div>
-
-<div class="card">
-<h2>Room Management</h2>
-<p class="small">First time setup: create the 21 room records.</p>
-<button id="setupRooms">INITIALIZE 21 ROOMS</button>
-<p id="roomMessage"></p>
-<div id="roomList"></div>
-</div>
-
-<p id="status"></p>
-</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -119,10 +344,10 @@ document.getElementById("loginBtn").onclick = async () => {
     return;
   }
 
-  try {
+  try{
     await auth.signInWithEmailAndPassword(email,password);
     message.innerText = "";
-  } catch(error) {
+  }catch(error){
     message.innerText = error.message;
   }
 };
@@ -133,7 +358,7 @@ auth.onAuthStateChanged(user => {
     dashboard.classList.remove("hidden");
     document.getElementById("adminEmail").innerText = user.email || "Admin";
     startDashboard();
-  } else {
+  }else{
     stopDashboard();
     loginBox.classList.remove("hidden");
     dashboard.classList.add("hidden");
@@ -143,6 +368,7 @@ auth.onAuthStateChanged(user => {
 function startDashboard(){
 
   unsubscribeRooms = db.collection("rooms").onSnapshot(snapshot => {
+
     const rooms = snapshot.docs.map(doc => ({
       id:doc.id,...doc.data()
     }));
@@ -150,38 +376,61 @@ function startDashboard(){
     document.getElementById("totalRooms").innerText = rooms.length;
 
     const occupied = rooms.filter(r => r.status === "Occupied").length;
+
     document.getElementById("occupiedRooms").innerText = occupied;
-    document.getElementById("availableRooms").innerText = rooms.length - occupied;
+    document.getElementById("availableRooms").innerText =
+      rooms.length - occupied;
 
     const list = document.getElementById("roomList");
     list.innerHTML = "";
 
     rooms.sort((a,b) => a.number-b.number).forEach(room => {
+
       const div = document.createElement("div");
       div.className = "room";
 
-      const info = document.createElement("span");
-      info.textContent = "Room " + room.number + " - " + room.type + " - " + room.status;
+      const info = document.createElement("div");
+      info.className = "room-info";
+
+      const title = document.createElement("strong");
+      title.textContent = "Room " + room.number;
+
+      const type = document.createElement("span");
+      type.textContent = room.type;
+
+      const rate = document.createElement("span");
+      rate.textContent = "₹" + Number(room.rate).toLocaleString("en-IN") + " / day";
+
+      const status = document.createElement("span");
+      status.textContent = room.status;
+      status.className = room.status === "Occupied" ? "occupied" : "available";
+
+      info.append(title,type,rate,status);
 
       const button = document.createElement("button");
-      button.textContent = room.status === "Occupied" ? "MARK AVAILABLE" : "MARK OCCUPIED";
+      button.textContent =
+        room.status === "Occupied" ? "MARK AVAILABLE" : "MARK OCCUPIED";
 
       button.onclick = async () => {
-        const newStatus = room.status === "Occupied" ? "Available" : "Occupied";
-        try {
-          await db.collection("rooms").doc(room.id).update({status:newStatus});
-        } catch(error) {
+        const newStatus =
+          room.status === "Occupied" ? "Available" : "Occupied";
+
+        try{
+          await db.collection("rooms").doc(room.id).update({
+            status:newStatus
+          });
+        }catch(error){
           alert(error.message);
         }
       };
 
-      div.appendChild(info);
-      div.appendChild(button);
+      div.append(info,button);
       list.appendChild(div);
     });
 
-  }, error => {
-    document.getElementById("status").innerText = "Rooms error: " + error.message;
+  },error => {
+    document.getElementById("status").innerText =
+      "Rooms error: " + error.message;
   });
 
   unsubscribePayments = db.collection("payments").onSnapshot(snapshot => {
@@ -190,81 +439,97 @@ function startDashboard(){
 
     snapshot.forEach(doc => {
       const data = doc.data();
-      if(data.date === today) total += Number(data.amount || 0);
+      if(data.date === today){
+        total += Number(data.amount || 0);
+      }
     });
 
     document.getElementById("todayIncome").innerText =
       "₹" + total.toLocaleString("en-IN");
-  }, error => {
-    document.getElementById("status").innerText = "Payments: " + error.message;
+
+  },error => {
+    document.getElementById("status").innerText =
+      "Payments: " + error.message;
   });
 
-  unsubscribeBookings = db.collection("bookingRequests").onSnapshot(snapshot => {
-    document.getElementById("bookingCount").innerText = snapshot.size;
-  }, error => {
-    document.getElementById("status").innerText = "Bookings: " + error.message;
-  });
+  unsubscribeBookings =
+    db.collection("bookingRequests").onSnapshot(snapshot => {
+      document.getElementById("bookingCount").innerText = snapshot.size;
+    },error => {
+      document.getElementById("status").innerText =
+        "Bookings: " + error.message;
+    });
 }
 
 function stopDashboard(){
   if(unsubscribeRooms) unsubscribeRooms();
   if(unsubscribePayments) unsubscribePayments();
   if(unsubscribeBookings) unsubscribeBookings();
+
   unsubscribeRooms = null;
   unsubscribePayments = null;
   unsubscribeBookings = null;
 }
 
 document.getElementById("setupRooms").onclick = async () => {
+
   const button = document.getElementById("setupRooms");
   const message = document.getElementById("roomMessage");
 
-  button.disabled = true;
-  message.innerText = "Creating 21 rooms...";
+  if(!confirm("Create 21 PS Residency rooms (8 to 28)?")) return;
 
-  try {
+  button.disabled = true;
+  message.innerText = "Creating rooms...";
+
+  try{
+
     const existing = await db.collection("rooms").get();
 
-    if (!existing.empty) {
-      message.innerText = "Room records already exist. No changes made.";
+    if(!existing.empty){
+      message.innerText =
+        "Room records already exist. No changes made.";
       return;
     }
 
     const batch = db.batch();
 
-    for (let n = 8; n <= 28; n++) {
+    for(let n=8;n<=28;n++){
+
       let type = "Normal Single";
       let rate = 500;
 
-      if ([15, 16, 17, 26].includes(n)) {
+      if([15,16,17,26].includes(n)){
         type = "Normal Double";
         rate = 900;
-      } else if ([18, 19].includes(n)) {
+      }else if([18,19].includes(n)){
         type = "AC Single";
         rate = 1000;
-      } else if ([27, 28].includes(n)) {
+      }else if([27,28].includes(n)){
         type = "AC Double";
         rate = 1800;
       }
 
-      batch.set(db.collection("rooms").doc("room-" + n), {
-        number: n,
-        type: type,
-        rate: rate,
-        status: "Available"
+      batch.set(db.collection("rooms").doc("room-"+n),{
+        number:n,
+        type:type,
+        rate:rate,
+        status:"Available"
       });
     }
 
     await batch.commit();
+
     message.innerText = "21 rooms created successfully!";
-  } catch (error) {
+
+  }catch(error){
     message.innerText = error.message;
-  } finally {
+  }finally{
     button.disabled = false;
   }
 };
 
 document.getElementById("logoutBtn").onclick = () => auth.signOut();
+
 </script>
 </body>
 </html>
