@@ -24,25 +24,8 @@ header{position:sticky;top:0;z-index:20;background:#fffF;border-bottom:1px solid
 .btn:hover{background:#98713a;transform:translateY(-1px)}
 .btn.outline{background:transparent;border:1px solid var(--gold);color:var(--gold)}
 .menu-btn{display:none;background:none;color:var(--navy);font-size:25px;padding:5px}
-.hero{
-  min-height:610px;
-  display:flex;
-  align-items:center;
-  position:relative;
-  color:#fff;
-  background-color:#14243b;
-  background-image:
-    linear-gradient(90deg,#14243b 0%,#14243b 38%,rgba(20,36,59,.65) 48%,transparent 68%),
-    url('IMG_0001.jpeg');
-  background-position:center,right center;
-  background-size:cover,auto 100%;
-  background-repeat:no-repeat;
-}
-.hero-content{
-  max-width:560px;
-  width:52%;
-  padding:95px 0;
-}
+.hero{min-height:610px;display:flex;align-items:center;position:relative;color:#fff;background:linear-gradient(90deg,rgba(10,22,39,.82),rgba(10,22,39,.38)),url('IMG_0001.jpeg') center 48%/cover no-repeat}
+.hero-content{max-width:650px;padding:95px 0}
 .eyebrow{color:var(--gold-light);font-size:12px;letter-spacing:3px;font-weight:700;text-transform:uppercase}
 .hero h1{font-size:clamp(38px,6vw,68px);line-height:1.08;margin:18px 0}
 .hero p{font-size:17px;color:#f0f2f5;max-width:560px;margin-bottom:28px}
