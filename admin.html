@@ -388,7 +388,14 @@ function stopDashboard(){
   [unsubscribeRooms,unsubscribePayments,unsubscribeBookings,unsubscribeStays,unsubscribeExpenses].forEach(unsub=>{if(typeof unsub==="function")unsub();});
   unsubscribeRooms=unsubscribePayments=unsubscribeBookings=unsubscribeStays=unsubscribeExpenses=null;
 }
-$("logoutBtn").onclick=()=>auth.signOut();
+$("logoutBtn").onclick=async()=>{
+  try{
+    await auth.signOut();
+    window.location.href="index.html";
+  }catch(error){
+    alert("Logout failed: "+error.message);
+  }
+};
 </script>
 </body>
 </html>
