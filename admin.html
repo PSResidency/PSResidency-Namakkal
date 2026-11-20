@@ -888,4 +888,289 @@ function renderBookings(){
   });
   $("bookingTable").innerHTML=tbl(["Guest","Mobile","Stay","Room / Guests","Message","Status","Actions"],rows);
 }
-async function setBooking(id,status){try{await db.collection("bookingRequests").doc(id
+async function setBooking(id,status){try{await db.collection("bookingRequests").doc(id).update({status});toast("Marked "+status+".");}catch(e){toast(e.message,"error");}}
+function bkCheckin(id){
+  const b=bookings.find(x=>x.id===id);if(!b)return;
+  showPage("checkin");resetCheckinForm();pendingBookingId=id;
+  $("ciName").value=pick(b,["name","guestName","fullName","customerName"]);
+  $("ciPhone").value=String(pick(b,["phone","mobile","mobileNumber","contact"])).replace(/\D/g,"").slice(-10);
+  const g=num(pick(b,["guests","guestCount","persons","adults"]));if(g)$("ciGuests").value=g;
+  const ci=pick(b,["checkin","checkIn","checkinDate","checkInDate","arrival","from"]),co=pick(b,["checkout","checkOut","checkoutDate","checkOutDate","departure","to"]);
+  if(typeof ci==="string"&&/^\d{4}-\d{2}-\d{2}/.test(ci))$("ciInDate").value=ci.slice(0,10);
+  if(typeof co==="string"&&/^\d{4}-\d{2}-\d{2}/.test(co))$("ciOutDate").value=co.slice(0,10);
+  ciCalc();toast("Details filled from booking. Select a room.");
+}
+
+/* ============ ROOMS ============ */
+function renderRooms(){
+  $("initRooms").classList.toggle("hidden",rooms.length>0);
+  $("roomGrid").innerHTML=rooms.length?[...rooms].sort((a,b)=>a.number-b.number).map(r=>{
+    const cls=r.status==="Occupied"?"occ":r.status==="Maintenance"?"mnt":"";
+    const g=r.status==="Occupied"?stays.find(s=>s.id===r.currentStayId):null;
+    return `<div class="room ${cls}"><h4>Room ${esc(r.number)}</h4><div class="small">${esc(r.type)}</div><div class="rate">${money(r.rate)}<span class="small"> / day</span></div>${statusBadge(r.status)}${g?`<div class="small" style="margin-top:6px">👤 ${esc(g.guestName)}</div>`:""}<div class="btns"><button class="btn sm outline" data-act="editRoom" data-id="${esc(r.id)}">✏️ Edit</button><button class="btn sm red" data-act="delRoom" data-id="${esc(r.id)}">🗑</button></div></div>`;
+  }).join(""):`<div class="empty" style="grid-column:1/-1">No rooms yet. Tap "Initialize 21 Rooms" or add rooms manually.</div>`;
+}
+function roomModal(id){
+  const r=id?rooms.find(x=>x.id===id):null;
+  const hasGuest=!!r&&r.status==="Occupied"&&stays.some(s=>s.id===r.currentStayId&&s.status==="Checked-in");
+  const stuck=!!r&&r.status==="Occupied"&&!hasGuest;
+  const occ=hasGuest;
+  const types=[...new Set(["Normal Single","Normal Double","AC Single","AC Double",...rooms.map(x=>x.type)])];
+  openModal(mHead(r?"Edit Room "+r.number:"Add Room")+`
+  <form id="rmForm"><div class="form-grid two">
+    <div class="field"><label>Room Number *</label><input id="rmNum" type="number" min="1" required value="${r?esc(r.number):""}"></div>
+    <div class="field"><label>Room Type *</label><input id="rmType" list="typeList" required value="${r?esc(r.type):""}"><datalist id="typeList">${types.map(t=>`<option value="${esc(t)}">`).join("")}</datalist></div>
+    <div class="field"><label>Rate / Day (₹) *</label><input id="rmRate" type="number" min="0" step="1" required value="${r?esc(r.rate):""}"></div>
+    <div class="field"><label>Status</label><select id="rmStatus" ${occ?"disabled":""}>${occ?`<option>Occupied</option>`:opts(["Available","Maintenance"],r?r.status:"Available")}</select></div>
+  </div>${occ?`<p class="small" style="margin-top:10px">Room is occupied. Check out the guest to change status. New rate applies to future check-ins only.</p>`:""}${stuck?`<p class="small" style="margin-top:10px;color:var(--red)">This room shows Occupied but has no active guest record. Choose Available and save to fix it.</p>`:""}
+  <div class="modal-foot"><button class="btn outline" type="button" data-act="closeModal">Cancel</button><button class="btn" type="submit" id="rmBtn">SAVE ROOM</button></div></form>`);
+  $("rmForm").onsubmit=async ev=>{
+    ev.preventDefault();$("rmBtn").disabled=true;
+    try{
+      const number=num($("rmNum").value),type=$("rmType").value.trim(),rate=num($("rmRate").value);
+      if(!number||!type)throw new Error("Enter room number and type.");
+      if(rooms.some(x=>x.number===number&&(!r||x.id!==r.id)))throw new Error("Room "+number+" already exists.");
+      if(r){const d={number,type,rate};if(!occ){d.status=$("rmStatus").value;if(r.currentStayId)d.currentStayId=FV.delete();}await db.collection("rooms").doc(r.id).update(d);}
+      else await db.collection("rooms").doc("room-"+number).set({number,type,rate,status:$("rmStatus").value});
+      closeModal();toast("Room saved.");
+    }catch(err){toast(err.message,"error");$("rmBtn").disabled=false;}
+  };
+}
+async function delRoom(id){
+  const r=rooms.find(x=>x.id===id);if(!r)return;
+  if(r.status==="Occupied")return toast("Cannot delete an occupied room. Check out the guest first.","error");
+  if(!confirm("Delete Room "+r.number+"? Old guest records are kept."))return;
+  try{await db.collection("rooms").doc(id).delete();toast("Room deleted.");}catch(e){toast(e.message,"error");}
+}
+$("initRooms").onclick=async()=>{
+  if(!confirm("Create 21 rooms from 8 to 28?"))return;
+  const b=$("initRooms");b.disabled=true;
+  try{
+    const ex=await db.collection("rooms").get();if(!ex.empty){toast("Rooms already exist.","error");return;}
+    const batch=db.batch();
+    for(let n=8;n<=28;n++){
+      let type="Normal Single",rate=500;
+      if([15,16,17,26].includes(n)){type="Normal Double";rate=900;}
+      else if([18,19].includes(n)){type="AC Single";rate=1000;}
+      else if([27,28].includes(n)){type="AC Double";rate=1800;}
+      batch.set(db.collection("rooms").doc("room-"+n),{number:n,type,rate,status:"Available"});
+    }
+    await batch.commit();toast("21 rooms created!");
+  }catch(e){toast(e.message,"error");}finally{b.disabled=false;}
+};
+
+/* ============ EXPENSES ============ */
+$("eCat").innerHTML='<option value="">All categories</option>'+CATEGORIES.map(c=>`<option>${c}</option>`).join("");
+$("eMonth").value=localDate().slice(0,7);
+["eMonth","eCat","eSearch"].forEach(i=>{$(i).addEventListener("input",renderExpenses);$(i).addEventListener("change",renderExpenses);});
+$("eClear").onclick=()=>{$("eMonth").value="";$("eCat").value="";$("eSearch").value="";renderExpenses();};
+function renderExpenses(){
+  const m=$("eMonth").value,c=$("eCat").value,q=$("eSearch").value.trim().toLowerCase();
+  const list=expenses.filter(e=>(!m||(e.date||"").slice(0,7)===m)&&(!c||e.category===c)&&(!q||String(e.description||"").toLowerCase().includes(q))).sort((a,b)=>(b.date||"").localeCompare(a.date||"")||tsVal(b)-tsVal(a));
+  $("eTotal").textContent=money(sumBy(list,e=>e.amount));
+  $("expenseTable").innerHTML=tbl(["Date","Category","Description","Method","#Amount","Actions"],list.slice(0,300).map(e=>[
+    fmtDate(e.date),`<span class="badge gray">${esc(e.category)}</span>`,esc(e.description),esc(e.method),`<b>${money(e.amount)}</b>`,
+    `<button class="btn sm outline" data-act="editExp" data-id="${esc(e.id)}">✏️ Edit</button><button class="btn sm red" data-act="delExp" data-id="${esc(e.id)}">🗑</button>`]));
+}
+function expModal(id){
+  const e=id?expenses.find(x=>x.id===id):null;
+  openModal(mHead(e?"Edit Expense":"Add Expense")+`
+  <form id="exForm"><div class="form-grid two">
+    <div class="field"><label>Date *</label><input id="exDate" type="date" required value="${e?esc(e.date):localDate()}"></div>
+    <div class="field"><label>Category *</label><select id="exCat" required>${opts(CATEGORIES,e?e.category:"")}</select></div>
+    <div class="field full"><label>Description *</label><input id="exDesc" required maxlength="180" value="${e?esc(e.description):""}" placeholder="Expense details"></div>
+    <div class="field"><label>Amount (₹) *</label><input id="exAmt" type="number" min="0.01" step="0.01" required value="${e?esc(e.amount):""}"></div>
+    <div class="field"><label>Payment Method *</label><select id="exMethod">${opts(["Cash","GPay","Card","Bank Transfer"],e?e.method:"Cash")}</select></div>
+  </div><div class="modal-foot"><button class="btn outline" type="button" data-act="closeModal">Cancel</button><button class="btn" type="submit" id="exBtn">SAVE EXPENSE</button></div></form>`);
+  $("exForm").onsubmit=async ev=>{
+    ev.preventDefault();$("exBtn").disabled=true;
+    const d={date:$("exDate").value,category:$("exCat").value,description:$("exDesc").value.trim(),amount:num($("exAmt").value),method:$("exMethod").value};
+    try{
+      if(!d.date||!d.category||!d.description||d.amount<=0)throw new Error("Enter all expense details correctly.");
+      if(e)await db.collection("expenses").doc(e.id).update(d);
+      else await db.collection("expenses").add({...d,createdAt:FV.serverTimestamp(),createdBy:auth.currentUser?auth.currentUser.uid:""});
+      closeModal();toast("Expense saved.");
+    }catch(err){toast(err.message,"error");$("exBtn").disabled=false;}
+  };
+}
+async function delExp(id){
+  const e=expenses.find(x=>x.id===id);if(!e)return;
+  if(!confirm("Delete expense "+money(e.amount)+" ("+e.category+")?"))return;
+  try{await db.collection("expenses").doc(id).delete();toast("Expense deleted.");}catch(err){toast(err.message,"error");}
+}
+
+/* ============ PAYMENTS ============ */
+$("pMonth").value=localDate().slice(0,7);
+["pMonth","pSearch"].forEach(i=>{$(i).addEventListener("input",renderPayments);$(i).addEventListener("change",renderPayments);});
+$("pClear").onclick=()=>{$("pMonth").value="";$("pSearch").value="";renderPayments();};
+function renderPayments(){
+  const m=$("pMonth").value,q=$("pSearch").value.trim().toLowerCase();
+  const rows=payments.map(p=>({...p,guest:(stays.find(s=>s.id===p.stayId)||{}).guestName||"-"}))
+    .filter(p=>(!m||(p.date||"").slice(0,7)===m)&&(!q||[p.guest,p.roomNumber,p.method,p.type].some(v=>String(v||"").toLowerCase().includes(q))))
+    .sort((a,b)=>(b.date||"").localeCompare(a.date||"")||tsVal(b)-tsVal(a));
+  $("pTotal").textContent=money(sumBy(rows,p=>p.amount));
+  $("paymentTable").innerHTML=tbl(["Date","Guest","Room","Type","Method","#Amount","Actions"],rows.slice(0,300).map(p=>[
+    fmtDate(p.date),esc(p.guest),esc(p.roomNumber||"-"),`<span class="badge blue">${esc(p.type||"")}</span>`,esc(p.method),`<b>${money(p.amount)}</b>`,
+    `<button class="btn sm red" data-act="delPay" data-id="${esc(p.id)}">🗑</button>`]));
+}
+async function delPay(id){
+  const p=payments.find(x=>x.id===id);if(!p)return;
+  const st=stays.find(s=>s.id===p.stayId);
+  if(!confirm("Delete payment of "+money(p.amount)+"?"+(st?"\n\nThe amount will be added back to "+st.guestName+"'s balance.":"")))return;
+  try{
+    const batch=db.batch();batch.delete(db.collection("payments").doc(id));
+    if(st)batch.update(db.collection("stays").doc(st.id),{balance:FV.increment(num(p.amount))});
+    await batch.commit();toast("Payment deleted.");
+  }catch(err){toast(err.message,"error");}
+}
+
+/* ============ REPORTS ============ */
+$("rMonth").value=localDate().slice(0,7);
+$("rMonth").addEventListener("change",renderReports);$("rMonth").addEventListener("input",renderReports);
+function repData(){
+  const m=$("rMonth").value||localDate().slice(0,7);
+  return {m,pay:payments.filter(p=>(p.date||"").slice(0,7)===m),exp:expenses.filter(e=>(e.date||"").slice(0,7)===m),ins:stays.filter(s=>(s.checkinDate||"").slice(0,7)===m)};
+}
+function renderReports(){
+  const {m,pay,exp,ins}=repData();
+  const inc=sumBy(pay,p=>p.amount),ex=sumBy(exp,e=>e.amount);
+  $("repStats").innerHTML=statCard("💵","Income (collections)",money(inc),"g")+statCard("🧾","Expenses",money(ex),"r")+statCard("📊","Net Profit",money(inc-ex),"b")+statCard("🛎️","Check-ins",ins.length,"a");
+  const [y,mo]=m.split("-").map(Number),n=new Date(y,mo,0).getDate(),days=[];
+  for(let i=1;i<=n;i++)days.push(m+"-"+pad(i));
+  $("repChart").innerHTML=barChart(days,groupSum(pay,p=>p.date,p=>p.amount),groupSum(exp,e=>e.date,e=>e.amount));
+  $("repCats").innerHTML=hbars(groupSum(exp,e=>e.category,e=>e.amount));
+  $("repMethods").innerHTML=hbars(groupSum(pay,p=>p.method,p=>p.amount));
+}
+$("rPrint").onclick=()=>window.print();
+$("rCsv").onclick=()=>{
+  const {m,pay,exp}=repData();
+  const q=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
+  const lines=[["Type","Date","Category/Type","Description/Guest","Method","Amount"].map(q).join(",")];
+  pay.sort((a,b)=>a.date.localeCompare(b.date)).forEach(p=>lines.push(["Income",p.date,p.type,(stays.find(s=>s.id===p.stayId)||{}).guestName||"Room "+p.roomNumber,p.method,p.amount].map(q).join(",")));
+  exp.sort((a,b)=>a.date.localeCompare(b.date)).forEach(e=>lines.push(["Expense",e.date,e.category,e.description,e.method,e.amount].map(q).join(",")));
+  const blob=new Blob(["\ufeff"+lines.join("\n")],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="PS-Residency-"+m+".csv";document.body.appendChild(a);a.click();a.remove();
+};
+
+/* ============ SETTINGS ============ */
+function fillSettings(){
+  $("sName").value=settings.name;$("sPhone").value=settings.phone;$("sEmail").value=settings.email;$("sGst").value=settings.gstin;
+  $("sAddress").value=settings.address;$("sIn").value=settings.inTime;$("sOut").value=settings.outTime;$("sFooter").value=settings.footer;
+}
+$("setForm").onsubmit=async e=>{
+  e.preventDefault();
+  const d={name:$("sName").value.trim()||"PS Residency",phone:$("sPhone").value.trim(),email:$("sEmail").value.trim(),gstin:$("sGst").value.trim(),address:$("sAddress").value.trim(),inTime:$("sIn").value||"12:00",outTime:$("sOut").value||"11:00",footer:$("sFooter").value.trim()};
+  try{await db.collection("settings").doc("hotel").set(d,{merge:true});settings={...settings,...d};applyCheckinDefaults(true);toast("Settings saved.");}
+  catch(err){toast("Could not save: "+err.message,"error");}
+};
+
+/* ============ WHATSAPP BILL ============ */
+let lastBill=null;
+function waBill(){
+  const s=lastBill;if(!s)return;
+  const ph=String(s.phone||"").replace(/\D/g,"").slice(-10);
+  if(ph.length!==10)return toast("Guest mobile number is not valid.","error");
+  const h=settings,total=num(s.totalAmount),bal=num(s.balance),paid=total-bal;
+  const roomAmt=num(s.roomAmount!=null?s.roomAmount:num(s.rate)*num(s.days)),extra=num(s.extraCharges),disc=num(s.discount);
+  const lines=["*"+h.name+"*","Bill for "+s.guestName,"Room "+s.roomNumber+" ("+(s.roomType||"")+")",
+    "Check-in: "+fmtDate(s.checkinDate)+" "+fmtTime(s.checkinTime),"Check-out: "+fmtDate(s.checkoutDate)+" "+fmtTime(s.checkoutTime),"",
+    "Room charges: "+money(s.rate)+" x "+s.days+" day(s) = "+money(roomAmt)];
+  if(extra)lines.push("Extra charges: "+money(extra));
+  if(disc)lines.push("Discount: -"+money(disc));
+  lines.push("*Total: "+money(total)+"*","Paid: "+money(paid),bal>0?"*Balance due: "+money(bal)+"*":"Fully paid ✅","");
+  if(h.footer)lines.push(h.footer);
+  if(h.phone)lines.push("Contact: "+h.phone);
+  window.open("https://wa.me/91"+ph+"?text="+encodeURIComponent(lines.join("\n")),"_blank");
+}
+
+/* ============ ROOM CALENDAR ============ */
+function stayRange(s){
+  const st=s.checkinDate;if(!st)return null;
+  let en=(s.status==="Checked-out"&&s.checkoutActualDate)?s.checkoutActualDate:s.checkoutDate;
+  if(!en)return null;
+  if(s.status==="Checked-in"&&en<=localDate())en=addDays(localDate(),1);
+  if(en<=st)en=addDays(st,1);
+  return {st,en};
+}
+$("calMonth").value=localDate().slice(0,7);
+$("calMonth").addEventListener("change",renderCalendar);
+function shiftCal(n){
+  const [y,m]=($("calMonth").value||localDate().slice(0,7)).split("-").map(Number);
+  const d=new Date(y,m-1+n,1);$("calMonth").value=d.getFullYear()+"-"+pad(d.getMonth()+1);renderCalendar();
+}
+$("calPrev").onclick=()=>shiftCal(-1);$("calNext").onclick=()=>shiftCal(1);
+$("calToday").onclick=()=>{$("calMonth").value=localDate().slice(0,7);renderCalendar();};
+function renderCalendar(){
+  const m=$("calMonth").value||localDate().slice(0,7);
+  const [y,mo]=m.split("-").map(Number),n=new Date(y,mo,0).getDate(),today=localDate();
+  const days=[];for(let i=1;i<=n;i++)days.push(m+"-"+pad(i));
+  const endEx=addDays(days[n-1],1);
+  const sorted=[...rooms].sort((a,b)=>a.number-b.number);
+  if(!sorted.length){$("calWrap").innerHTML=`<div class="empty">No rooms yet.</div>`;return;}
+  const ranges=stays.map(s=>({s,r:stayRange(s)})).filter(x=>x.r);
+  let html=`<table class="cal" style="width:${74+n*38}px"><thead><tr><th class="rn">Room</th>${days.map(d=>`<th class="${d===today?"today":""}">${d.slice(8)}</th>`).join("")}</tr></thead><tbody>`;
+  sorted.forEach(room=>{
+    const rs=ranges.filter(x=>x.s.roomId===room.id);
+    html+=`<tr><td class="rn">${esc(room.number)}</td>`;
+    let i=0;
+    while(i<n){
+      const d=days[i],hit=rs.find(x=>x.r.st<=d&&d<x.r.en);
+      if(hit){
+        const stop=hit.r.en<endEx?hit.r.en:endEx,span=Math.max(1,dateDays(d,stop));
+        html+=`<td colspan="${span}" class="cal-stay ${hit.s.status==="Checked-in"?"in":"out"}" data-act="bill" data-id="${esc(hit.s.id)}" title="${esc(hit.s.guestName)} · ${fmtDate(hit.r.st)} → ${fmtDate(hit.r.en)}">${esc(hit.s.guestName)}</td>`;
+        i+=span;
+      }else{html+=`<td class="${d===today?"today":""}"></td>`;i++;}
+    }
+    html+="</tr>";
+  });
+  $("calWrap").innerHTML=html+"</tbody></table>";
+}
+
+/* ============ DAILY REPORT ============ */
+$("dDate").value=localDate();
+$("dDate").addEventListener("change",renderDaily);$("dDate").addEventListener("input",renderDaily);
+$("dPrint").onclick=()=>window.print();
+function renderDaily(){
+  const d=$("dDate").value||localDate();
+  const pay=payments.filter(p=>p.date===d),exp=expenses.filter(e=>e.date===d);
+  const inc=sumBy(pay,p=>p.amount),ex=sumBy(exp,e=>e.amount);
+  const ins=stays.filter(s=>s.checkinDate===d);
+  const outs=stays.filter(s=>s.status==="Checked-out"&&s.checkoutActualDate===d);
+  const occ=stays.filter(s=>{const r=stayRange(s);return r&&r.st<=d&&d<r.en;}).length;
+  const guestOf=id=>(stays.find(s=>s.id===id)||{}).guestName||"-";
+  $("dHead").innerHTML=`<h2>${esc(settings.name)}</h2><p class="muted" style="margin:4px 0 0">Daily Report · ${fmtDate(d)}</p>`;
+  $("dStats").innerHTML=statCard("💵","Income",money(inc),"g")+statCard("🧾","Expense",money(ex),"r")+statCard("📊","Net",money(inc-ex),"b")+statCard("🛏️","Rooms Occupied (night)",occ+" / "+rooms.length,"a");
+  $("dInT").textContent="Check-ins ("+ins.length+")";
+  $("dOutT").textContent="Check-outs ("+outs.length+")";
+  $("dPayT").textContent="Payments Received ("+pay.length+")";
+  $("dExpT").textContent="Expenses ("+exp.length+")";
+  $("dIn").innerHTML=tbl(["Guest","Room","Mobile","#Total","#Advance"],ins.map(s=>[esc(s.guestName),esc(s.roomNumber),esc(s.phone||"-"),money(s.totalAmount),money(s.advance)]));
+  $("dOut").innerHTML=tbl(["Guest","Room","#Total","#Balance"],outs.map(s=>[esc(s.guestName),esc(s.roomNumber),money(s.totalAmount),money(s.balance)]));
+  $("dPay").innerHTML=tbl(["Guest","Room","Type","Method","#Amount"],pay.map(p=>[esc(guestOf(p.stayId)),esc(p.roomNumber||"-"),esc(p.type||""),esc(p.method||""),`<b>${money(p.amount)}</b>`]));
+  const mm=Object.entries(groupSum(pay,p=>p.method,p=>p.amount));
+  $("dPayMethods").textContent=mm.length?mm.map(([k,v])=>k+": "+money(v)).join("  ·  "):"";
+  $("dExp").innerHTML=tbl(["Category","Description","Method","#Amount"],exp.map(e=>[esc(e.category),esc(e.description),esc(e.method),`<b>${money(e.amount)}</b>`]));
+}
+
+/* ============ GLOBAL ACTIONS ============ */
+function actionsInit(){}
+const actions={
+  closeModal,printBill,waBill,
+  goPage:id=>showPage(id),
+  bill:id=>openBill(id),editStay,checkout:checkoutModal,collect:collectModal,delStay,
+  addRoom:()=>roomModal(),editRoom:id=>roomModal(id),delRoom,
+  addExp:()=>expModal(),editExp:id=>expModal(id),delExp,delPay,
+  bkConfirm:id=>setBooking(id,"Confirmed"),bkReject:id=>setBooking(id,"Rejected"),bkCheckin,
+  bkDel:async id=>{if(confirm("Delete this booking request?")){try{await db.collection("bookingRequests").doc(id).delete();toast("Booking deleted.");}catch(e){toast(e.message,"error");}}}
+};
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;
+  const fn=actions[b.dataset.act];if(fn)fn(b.dataset.id);
+});
+
+/* ============ INIT ============ */
+resetCheckinForm();
+fillSettings();
+</script>
+</body>
+</html>
