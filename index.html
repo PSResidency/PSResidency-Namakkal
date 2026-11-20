@@ -3,94 +3,199 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PS Residency | Management</title>
+<meta name="description" content="Welcome to P.S. Residency. View our rooms, explore the property and contact us for bookings.">
+<title>P.S. Residency | Comfortable Stay</title>
 <style>
+:root{--navy:#14243b;--navy2:#203754;--gold:#b58b4b;--gold-light:#e4c58e;--cream:#fbf8f2;--ink:#202938;--muted:#697586;--white:#fff}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#f4f6fa;color:#172033}
-.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#101c35,#263d60)}
-.panel{background:white;padding:35px;border-radius:18px;width:100%;max-width:390px;box-shadow:0 15px 50px #0003}
-.logo{text-align:center;font-size:27px;font-weight:bold;color:#b28a45;margin-bottom:8px}
-.sub{text-align:center;color:#778;margin-bottom:28px}
-label{display:block;font-size:13px;margin:14px 0 7px}
-input{width:100%;padding:13px;border:1px solid #ddd;border-radius:8px;font-size:15px}
-button{border:0;background:#b28a45;color:white;padding:13px;border-radius:8px;cursor:pointer;font-weight:bold}
-.login button{width:100%;margin-top:22px}
-.error{color:#c33;font-size:13px;margin-top:12px}
-#dashboard{display:none}
-.sidebar{background:#14233d;color:white;width:240px;min-height:100vh;padding:25px 18px;position:fixed}
-.sidebar h2{color:#d6b16c;margin-bottom:35px}
-.sidebar p{padding:14px 10px;border-radius:8px;margin:5px 0;cursor:pointer}
-.sidebar p:hover{background:#293b59}
-.main{margin-left:240px;padding:30px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;gap:15px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.card{background:white;padding:22px;border-radius:13px;box-shadow:0 3px 15px #00000008}
-.card small{color:#778}
-.card h2{font-size:27px;margin-top:12px;color:#b28a45}
-.section{background:white;padding:25px;border-radius:13px;margin-top:25px}
-.logout{background:#b28a45}
-@media(max-width:800px){
-.sidebar{position:static;width:100%;min-height:auto}
-.sidebar p{display:inline-block;padding:9px}
-.main{margin:0;padding:18px}
-.cards{grid-template-columns:repeat(2,1fr)}
-.top{align-items:flex-start;flex-direction:column}
+html{scroll-behavior:smooth}
+body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#fff;line-height:1.6}
+a{text-decoration:none;color:inherit}
+img{display:block;width:100%;object-fit:cover}
+.container{width:min(1160px,92%);margin:auto}
+header{position:sticky;top:0;z-index:20;background:#fffF;border-bottom:1px solid #eee;backdrop-filter:blur(12px)}
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-size:22px;font-weight:800;letter-spacing:1px;color:var(--navy)}
+.brand span{display:block;font-size:10px;letter-spacing:4px;color:var(--gold);font-weight:700}
+.navlinks{display:flex;align-items:center;gap:27px;font-size:14px;font-weight:600;color:#39465a}
+.navlinks a:hover{color:var(--gold)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:7px;padding:12px 19px;background:var(--gold);color:white;font-weight:700;font-size:14px;cursor:pointer;transition:.2s}
+.btn:hover{background:#98713a;transform:translateY(-1px)}
+.btn.outline{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+.menu-btn{display:none;background:none;color:var(--navy);font-size:25px;padding:5px}
+.hero{min-height:610px;display:flex;align-items:center;position:relative;color:#fff;background:linear-gradient(90deg,rgba(10,22,39,.82),rgba(10,22,39,.38)),url('IMG_4385.jpeg') center 48%/cover no-repeat}
+.hero-content{max-width:650px;padding:95px 0}
+.eyebrow{color:var(--gold-light);font-size:12px;letter-spacing:3px;font-weight:700;text-transform:uppercase}
+.hero h1{font-size:clamp(38px,6vw,68px);line-height:1.08;margin:18px 0}
+.hero p{font-size:17px;color:#f0f2f5;max-width:560px;margin-bottom:28px}
+.hero-buttons{display:flex;gap:12px;flex-wrap:wrap}
+.hero .btn.outline{color:#fff;border-color:#ffffffa8}
+section{padding:82px 0}
+.section-head{text-align:center;max-width:680px;margin:0 auto 38px}
+.section-head .eyebrow{color:var(--gold)}
+.section-head h2{font-size:clamp(28px,4vw,40px);color:var(--navy);margin:9px 0}
+.section-head p{color:var(--muted)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.about-photo{height:420px;border-radius:14px;overflow:hidden;box-shadow:0 16px 45px #17203320}
+.about-photo img{height:100%}
+.about-copy h2{font-size:36px;color:var(--navy);line-height:1.2;margin:10px 0 18px}
+.about-copy p{color:var(--muted);margin-bottom:16px}
+.features{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.feature{padding:10px 14px;background:var(--cream);border:1px solid #eee2cf;border-radius:7px;font-size:13px;font-weight:700;color:#72562f}
+.rooms{background:var(--cream)}
+.room-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.room-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 7px 25px #18243a0c}
+.room-card img{height:235px}
+.room-card .room-info{padding:19px}
+.room-info h3{color:var(--navy);font-size:19px;margin-bottom:6px}
+.room-info p{color:var(--muted);font-size:14px}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.gallery-grid a{height:260px;border-radius:10px;overflow:hidden;background:#eee}
+.gallery-grid img{height:100%;transition:transform .35s}
+.gallery-grid a:hover img{transform:scale(1.05)}
+.contact{background:var(--navy);color:#fff}
+.contact .section-head h2{color:#fff}
+.contact .section-head p{color:#d2d9e3}
+.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.contact-card{padding:24px;background:#ffffff0d;border:1px solid #ffffff20;border-radius:10px;text-align:center}
+.contact-card .symbol{font-size:26px;color:var(--gold-light);margin-bottom:8px}
+.contact-card h3{font-size:17px;margin-bottom:7px}
+.contact-card p{color:#d2d9e3;font-size:14px;overflow-wrap:anywhere}
+.contact-card a{color:var(--gold-light);font-weight:700}
+.cta{text-align:center;padding:55px 20px;background:#f4ead9}
+.cta h2{color:var(--navy);font-size:30px;margin-bottom:9px}
+.cta p{color:var(--muted);margin-bottom:20px}
+footer{background:#0d192b;color:#c4ccd7;padding:23px 0;text-align:center;font-size:13px}
+footer strong{color:#fff}
+@media(max-width:850px){
+ .navlinks{display:none;position:absolute;top:76px;left:0;right:0;background:#fff;padding:18px 5%;box-shadow:0 10px 18px #0001;flex-direction:column;align-items:flex-start;gap:16px}
+ .navlinks.open{display:flex}.menu-btn{display:block}.nav-actions .login-btn{display:none}
+ .hero{min-height:560px}.hero-content{padding:75px 0}
+ .about-grid{grid-template-columns:1fr;gap:28px}.about-photo{height:330px}
+ .room-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+ .nav{height:68px}.brand{font-size:19px}.navlinks{top:68px}
+ .hero{min-height:540px;background-position:56% center}.hero-content{padding:65px 0}
+ .hero p{font-size:15px}.room-grid,.gallery-grid,.contact-grid{grid-template-columns:1fr}
+ .room-card img{height:250px}.gallery-grid a{height:250px}
+ section{padding:62px 0}
 }
 </style>
 </head>
 <body>
-<div class="login" id="login">
-<div class="panel">
-<div class="logo">PS RESIDENCY</div>
-<div class="sub">Hotel Management System</div>
-<form id="loginForm">
-<label>Admin Email</label>
-<input id="email" type="email" placeholder="Enter admin email" required>
-<label>Password</label>
-<input id="password" type="password" placeholder="Enter password" required>
-<button type="submit">LOGIN</button>
-<div class="error" id="error"></div>
-</form>
-</div>
-</div>
+<header>
+ <div class="container nav">
+  <a class="brand" href="#home">P.S. RESIDENCY<span>COMFORT • CARE • STAY</span></a>
+  <nav class="navlinks" id="navlinks">
+   <a href="#home" onclick="closeMenu()">Home</a>
+   <a href="#about" onclick="closeMenu()">About</a>
+   <a href="#rooms" onclick="closeMenu()">Rooms</a>
+   <a href="#gallery" onclick="closeMenu()">Gallery</a>
+   <a href="#contact" onclick="closeMenu()">Contact</a>
+  </nav>
+  <div class="nav-actions">
+   <a class="btn login-btn" href="admin.html">Admin Login</a>
+   <button class="menu-btn" aria-label="Open menu" onclick="toggleMenu()">☰</button>
+  </div>
+ </div>
+</header>
 
-<div id="dashboard">
-<aside class="sidebar">
-<h2>PS RESIDENCY</h2>
-<p>▦ Dashboard</p>
-<p>▣ Room Management</p>
-<p>♙ Check In / Check Out</p>
-<p>₹ Income & Expenses</p>
-<p>▤ Reports</p>
-</aside>
-<main class="main">
-<div class="top">
-<div><h1>Dashboard</h1><p>Welcome to PS Residency Management</p></div>
-<button class="logout" onclick="logout()">Logout</button>
-</div>
-<div class="cards">
-<div class="card"><small>Total Rooms</small><h2>28</h2></div>
-<div class="card"><small>Occupied Rooms</small><h2>0</h2></div>
-<div class="card"><small>Available Rooms</small><h2>28</h2></div>
-<div class="card"><small>Today's Income</small><h2>₹0</h2></div>
-</div>
-<div class="section">
-<h2>Welcome, Admin!</h2>
-<p style="margin-top:12px;color:#778">Your hotel management dashboard is ready for setup.</p>
-</div>
+<main>
+<section class="hero" id="home">
+ <div class="container">
+  <div class="hero-content">
+   <div class="eyebrow">Welcome to P.S. Residency</div>
+   <h1>A comfortable stay, made simple.</h1>
+   <p>Relax in a neat and welcoming place. Explore our rooms and contact us directly for availability and booking details.</p>
+   <div class="hero-buttons">
+    <a class="btn" href="https://wa.me/917339432933?text=Hello%20P.S.%20Residency,%20I%20would%20like%20to%20enquire%20about%20room%20availability." target="_blank" rel="noopener">Enquire on WhatsApp</a>
+    <a class="btn outline" href="#rooms">Explore Rooms</a>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="about">
+ <div class="container about-grid">
+  <div class="about-photo"><img src="IMG_4386.jpeg" alt="P.S. Residency building exterior"></div>
+  <div class="about-copy">
+   <div class="eyebrow">About us</div>
+   <h2>Welcome to P.S. Residency</h2>
+   <p>P.S. Residency offers a simple, comfortable place to stay. We focus on clean rooms and a welcoming experience for our guests.</p>
+   <p>For room availability, tariff details and booking assistance, please contact us directly.</p>
+   <div class="features">
+    <span class="feature">Comfortable Rooms</span>
+    <span class="feature">Convenient Location</span>
+    <span class="feature">Direct Booking Enquiry</span>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="rooms" id="rooms">
+ <div class="container">
+  <div class="section-head">
+   <div class="eyebrow">Stay with us</div>
+   <h2>Our Rooms</h2>
+   <p>Take a look at our room spaces. Contact us to confirm room type, current tariff and availability.</p>
+  </div>
+  <div class="room-grid">
+   <article class="room-card"><img src="IMG_4390.jpeg" alt="Guest room with double bed"><div class="room-info"><h3>Comfortable Room</h3><p>A neat room with bed, fan and essential in-room facilities.</p></div></article>
+   <article class="room-card"><img src="IMG_4391.jpeg" alt="Guest room interior"><div class="room-info"><h3>Spacious Room</h3><p>A welcoming space for a relaxing stay.</p></div></article>
+   <article class="room-card"><img src="IMG_4392.jpeg" alt="Guest room with television"><div class="room-info"><h3>AC Room</h3><p>Contact us for AC room availability and tariff details.</p></div></article>
+  </div>
+ </div>
+</section>
+
+<section id="gallery">
+ <div class="container">
+  <div class="section-head">
+   <div class="eyebrow">Property photos</div>
+   <h2>Explore P.S. Residency</h2>
+   <p>Real photos of our property and rooms.</p>
+  </div>
+  <div class="gallery-grid">
+   <a href="IMG_4385.jpeg" target="_blank"><img src="IMG_4385.jpeg" alt="P.S. Residency front view"></a>
+   <a href="IMG_4388.jpeg" target="_blank"><img src="IMG_4388.jpeg" alt="Residency corridor"></a>
+   <a href="IMG_4389.jpeg" target="_blank"><img src="IMG_4389.jpeg" alt="Residency entrance and corridor"></a>
+   <a href="IMG_4393.jpeg" target="_blank"><img src="IMG_4393.jpeg" alt="Guest room interior"></a>
+   <a href="IMG_4394.jpeg" target="_blank"><img src="IMG_4394.jpeg" alt="Guest room interior"></a>
+   <a href="IMG_4391.jpeg" target="_blank"><img src="IMG_4391.jpeg" alt="Guest room"></a>
+  </div>
+ </div>
+</section>
+
+<section class="contact" id="contact">
+ <div class="container">
+  <div class="section-head">
+   <div class="eyebrow">Get in touch</div>
+   <h2>Contact & Booking</h2>
+   <p>For bookings and enquiries, call or message us. We will help you with room availability and details.</p>
+  </div>
+  <div class="contact-grid">
+   <div class="contact-card"><div class="symbol">☎</div><h3>Call Us</h3><p><a href="tel:+917339432933">73394 32933</a></p></div>
+   <div class="contact-card"><div class="symbol">✉</div><h3>WhatsApp</h3><p><a href="https://wa.me/917339432933" target="_blank" rel="noopener">Chat with P.S. Residency</a></p></div>
+   <div class="contact-card"><div class="symbol">⌖</div><h3>Find Us</h3><p><a href="https://maps.apple/p/PW.e2zFiyDjLwp" target="_blank" rel="noopener">Open location map</a></p></div>
+  </div>
+ </div>
+</section>
+
+<section class="cta">
+ <div class="container">
+  <h2>Planning a stay?</h2>
+  <p>Contact P.S. Residency directly to enquire about rooms and bookings.</p>
+  <a class="btn" href="https://wa.me/917339432933?text=Hello%20P.S.%20Residency,%20I%20would%20like%20to%20book%20a%20room." target="_blank" rel="noopener">Contact on WhatsApp</a>
+ </div>
+</section>
 </main>
-</div>
 
+<footer><div class="container">© <span id="year"></span> <strong>P.S. Residency</strong>. All rights reserved.</div></footer>
 <script>
-const form=document.getElementById('loginForm');
-form.addEventListener('submit',function(e){
-e.preventDefault();
-document.getElementById('error').textContent='Firebase authentication setup pending.';
-});
-function logout(){
-document.getElementById('dashboard').style.display='none';
-document.getElementById('login').style.display='flex';
-}
+function toggleMenu(){document.getElementById('navlinks').classList.toggle('open')}
+function closeMenu(){document.getElementById('navlinks').classList.remove('open')}
+document.getElementById('year').textContent=new Date().getFullYear();
 </script>
 </body>
 </html>
