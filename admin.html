@@ -3,149 +3,385 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PS Residency | Hotel Management</title>
+<title>PS Residency | Admin Dashboard</title>
 <style>
-:root{--bg:#101827;--gold:#c49a55;--gold2:#e2bd7b;--green:#15966a;--red:#d9534f;--muted:#788397}
+:root{--bg:#f3f5f9;--side:#0f172a;--side2:#1e293b;--card:#fff;--text:#172033;--muted:#6b7689;--line:#e5e9f0;--gold:#c49a55;--gold-d:#a37a38;--gold-l:#fbf4e6;--green:#15966a;--red:#d9534f;--blue:#3b6fd4;--amber:#e0902a;--radius:14px}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:white;font-family:Arial,sans-serif}
-.container{max-width:1300px;width:94%;margin:30px auto}
-.header,.section-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.brand h1{color:var(--gold2);margin:0;letter-spacing:2px}
-.brand p,.small{color:var(--muted);font-size:13px}
-.card{background:#fff;color:#172033;border-radius:14px;padding:24px;margin-bottom:22px;box-shadow:0 8px 25px #0002}
-h2{font-size:20px;margin-top:0}
-input,select,button{width:100%;padding:13px;margin:7px 0;border:1px solid #ddd;border-radius:8px;font-size:15px}
-label{display:block;font-size:13px;font-weight:bold;margin-top:12px;color:#344054}
-button{background:var(--gold);color:white;border:0;font-weight:bold;cursor:pointer}
-button:hover{background:#9f773b}
-button:disabled{opacity:.5;cursor:not-allowed}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px;line-height:1.45}
 .hidden{display:none!important}
-.login-wrap{max-width:450px;margin:70px auto}
-.stats{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px;margin-bottom:22px}
-.stat{background:white;color:#172033;padding:17px;border-radius:12px;min-height:105px}
-.stat p{margin:0;color:var(--muted);font-size:13px}
-.stat h2{color:#b18a45;font-size:23px;margin:13px 0 0;overflow-wrap:anywhere}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+h1,h2,h3,h4{margin:0}
+button,input,select,textarea{font-family:inherit;font-size:14px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid #d5dbe5;border-radius:9px;background:#fff;color:var(--text);outline:none;transition:border .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px #c49a5530}
+input:disabled,select:disabled{background:#f1f3f7;color:#8a93a3}
+label{display:block;font-size:12px;font-weight:700;color:#475467;margin:0 0 5px}
 .field{min-width:0}.field.full{grid-column:1/-1}
-.room-grid,.guest-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:18px}
-.room,.guest,.expense{border:1px solid #e3e7ed;border-radius:10px;padding:15px;background:#fff;color:#172033;min-width:0}
-.room strong,.guest strong,.expense strong{display:block;margin-bottom:7px}
-.room span,.guest span,.expense span{display:block;font-size:13px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}
-.available{color:var(--green)!important;font-weight:bold}.occupied{color:var(--red)!important;font-weight:bold}
-.room button,.guest button{font-size:12px;padding:9px}
-.logout{width:auto;min-width:110px;background:#26364d}
-.summary{background:#f4f6f9;padding:15px;border-radius:9px;margin-top:15px}
-.summary p{display:flex;justify-content:space-between;gap:12px;margin:8px 0}
-#status,#roomMessage,#loginMessage,#checkinMessage,#expenseMessage{font-weight:bold;color:#b18a45;overflow-wrap:anywhere}
-.report-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
-.report-box{background:#f4f6f9;padding:15px;border-radius:9px}
-.report-box span{display:block;color:var(--muted);font-size:13px}
-.report-box strong{display:block;margin-top:8px;font-size:20px;color:#b18a45}
-@media(max-width:1100px){.stats{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.room-grid,.guest-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){
- .container{width:94%;margin:18px auto}.card{padding:17px}
- .stats{grid-template-columns:repeat(2,1fr);gap:9px}.stat{padding:14px;min-height:90px}.stat h2{font-size:20px}
- .form-grid,.room-grid,.guest-grid,.report-summary{grid-template-columns:1fr}
- .field.full{grid-column:auto}.logout{width:100%}.login-wrap{margin:35px auto}
+.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.form-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:9px;padding:10px 16px;font-weight:700;cursor:pointer;background:var(--gold);color:#fff;transition:.15s;white-space:nowrap}
+.btn:hover{background:var(--gold-d)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.full{width:100%}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:7px}
+.btn.outline{background:#fff;color:var(--text);border:1px solid #d5dbe5}.btn.outline:hover{background:#f4f6f9}
+.btn.red{background:var(--red)}.btn.red:hover{background:#b83f3b}
+.btn.green{background:var(--green)}.btn.green:hover{background:#0f7a55}
+.btn.blue{background:var(--blue)}.btn.blue:hover{background:#2c58b0}
+.btn.dark{background:#26364d}
+.small,.muted{color:var(--muted);font-size:12.5px}
+.card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:18px;box-shadow:0 1px 3px #1018280d,0 4px 14px #1018280a;border:1px solid #eef1f6}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.card-head h3{font-size:16px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.toolbar .field{flex:1;min-width:150px}
+.toolbar .field.auto{flex:0 0 auto;min-width:0}
+/* login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#0f172a,#1e293b 60%,#33281a)}
+.login-card{background:#fff;border-radius:18px;padding:34px 30px;width:100%;max-width:410px;box-shadow:0 25px 60px #0006}
+.login-card .logo{width:54px;height:54px;border-radius:14px;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;margin-bottom:14px}
+.login-card h2{font-size:22px}
+.login-card .field{margin-top:14px}
+.err{color:var(--red);font-weight:600;font-size:13px;margin-top:10px;min-height:18px}
+/* layout */
+.sidebar{position:fixed;inset:0 auto 0 0;width:250px;background:var(--side);color:#cbd5e1;display:flex;flex-direction:column;z-index:60;transition:transform .25s}
+.brand{padding:22px 20px;border-bottom:1px solid #ffffff14}
+.brand h1{color:var(--gold);font-size:19px;letter-spacing:2px}
+.brand p{margin:3px 0 0;font-size:11px;color:#8391a7;letter-spacing:1px}
+.nav{flex:1;overflow-y:auto;padding:12px}
+.nav button{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;color:#b6c2d4;padding:11px 14px;border-radius:10px;cursor:pointer;font-weight:600;text-align:left;margin-bottom:3px}
+.nav button:hover{background:var(--side2);color:#fff}
+.nav button.active{background:var(--gold);color:#fff}
+.nav .ico{width:20px;text-align:center;font-size:16px}
+.nav .badge-n{margin-left:auto;background:var(--red);color:#fff;border-radius:20px;font-size:11px;padding:1px 8px}
+.side-foot{padding:14px;border-top:1px solid #ffffff14}
+.side-foot .who{font-size:12px;color:#8391a7;margin-bottom:10px;overflow-wrap:anywhere}
+.overlay{position:fixed;inset:0;background:#0007;z-index:55}
+main{margin-left:250px;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:40;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 26px;display:flex;align-items:center;gap:14px}
+.topbar h2{font-size:19px;flex:1}
+.topbar .date{color:var(--muted);font-size:13px}
+.hamb{display:none;background:#fff;border:1px solid #d5dbe5;border-radius:9px;width:40px;height:40px;font-size:20px;cursor:pointer}
+.content{padding:24px 26px;max-width:1500px}
+.page{display:none}.page.active{display:block}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.stat{background:#fff;border-radius:var(--radius);padding:16px 18px;border:1px solid #eef1f6;box-shadow:0 1px 3px #1018280d;display:flex;gap:14px;align-items:center;min-width:0}
+.stat .si{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 44px;background:var(--gold-l)}
+.stat p{margin:0;color:var(--muted);font-size:12.5px}
+.stat h3{font-size:21px;margin-top:3px;overflow-wrap:anywhere}
+.stat.g .si{background:#e5f6ef}.stat.r .si{background:#fdeceb}.stat.b .si{background:#e8effc}.stat.a .si{background:#fdf1e0}
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+.grid2e{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+/* tables */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:#f7f8fb;text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:10px 12px;white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:hover td{background:#fafbfd}
+td.actions{white-space:nowrap}
+td.actions .btn{margin:2px 2px 2px 0}
+td.num,th.num{text-align:right}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700}
+.badge.green{background:#e5f6ef;color:#0f7a55}.badge.red{background:#fdeceb;color:#b83f3b}.badge.amber{background:#fdf1e0;color:#b36b0e}.badge.blue{background:#e8effc;color:#2c58b0}.badge.gray{background:#eef0f4;color:#566074}
+/* tabs */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{border:1px solid #d5dbe5;background:#fff;border-radius:20px;padding:7px 16px;font-weight:700;cursor:pointer;color:#475467}
+.tabs button.active{background:var(--gold);border-color:var(--gold);color:#fff}
+/* summary */
+.summary{background:#f6f7fa;border-radius:11px;padding:14px 16px;margin-top:14px}
+.summary p{display:flex;justify-content:space-between;gap:12px;margin:7px 0}
+.summary p.total{border-top:1px dashed #c8cfdb;padding-top:10px;font-size:16px}
+/* rooms */
+.room-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.room{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fff;border-top:4px solid var(--green)}
+.room.occ{border-top-color:var(--red)}.room.mnt{border-top-color:var(--amber)}
+.room h4{font-size:17px;margin-bottom:2px}
+.room .rate{font-size:17px;font-weight:800;color:var(--gold-d);margin:8px 0}
+.room .btns{display:flex;gap:6px;margin-top:10px}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:8px}
+.chip{border-radius:10px;padding:9px 4px;text-align:center;font-weight:800;background:#e5f6ef;color:#0f7a55;border:0;cursor:default;font-size:14px}
+.chip.occ{background:#fdeceb;color:#b83f3b;cursor:pointer}.chip.mnt{background:#fdf1e0;color:#b36b0e}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+/* charts */
+.bars{display:flex;align-items:stretch;gap:8px;height:210px;padding-top:6px}
+.bgrp{flex:1;display:flex;flex-direction:column;min-width:0}
+.bpair{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:3px;min-height:0}
+.bar{width:42%;max-width:24px;border-radius:4px 4px 0 0;min-height:2px}
+.bar.inc{background:var(--green)}.bar.exp{background:var(--red)}
+.blabel{font-size:10.5px;color:var(--muted);text-align:center;margin-top:6px;white-space:nowrap}
+.chart-scroll{overflow-x:auto}
+.hbar{margin:11px 0}
+.hbar .row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;gap:10px}
+.hbar .track{height:9px;background:#eef0f4;border-radius:6px;overflow:hidden}
+.hbar .fill{height:100%;background:var(--gold);border-radius:6px}
+.donut{width:150px;height:150px;border-radius:50%;margin:6px auto 14px;position:relative}
+.donut::after{content:"";position:absolute;inset:24px;background:#fff;border-radius:50%}
+.donut b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1;font-size:22px}
+.mini-list .it{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:center}
+.mini-list .it:last-child{border:0}
+/* modal */
+.modal{position:fixed;inset:0;background:#0f172a99;z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:30px 14px;overflow-y:auto}
+.modal-box{background:#fff;border-radius:16px;width:100%;max-width:620px;padding:22px;box-shadow:0 30px 70px #0005;animation:pop .18s}
+.modal-box.wide{max-width:820px}
+@keyframes pop{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.modal-head h3{font-size:18px}
+.x{background:#f1f3f7;border:0;border-radius:8px;width:32px;height:32px;font-size:18px;cursor:pointer}
+.modal-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.toast-wrap{position:fixed;right:18px;bottom:18px;z-index:200;display:flex;flex-direction:column;gap:8px}
+.toast{background:#1e293b;color:#fff;padding:12px 18px;border-radius:10px;box-shadow:0 8px 24px #0004;max-width:340px;animation:pop .2s;font-weight:600}
+.toast.ok{background:#0f7a55}.toast.error{background:#b83f3b}
+/* bill */
+.bill{color:#111;font-family:Arial,sans-serif}
+.bill-top{display:flex;justify-content:space-between;gap:16px;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:14px}
+.bill-top h2{font-size:24px;letter-spacing:1px}
+.bill-top p{margin:2px 0;font-size:12.5px;color:#444}
+.bill-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-bottom:14px;font-size:13px}
+.bill-meta b{display:inline-block;min-width:110px;color:#555;font-weight:600}
+.bill table{margin:10px 0}
+.bill th{background:#eee;color:#111}
+.bill td{border-bottom:1px solid #ddd}
+.bill .tot td{font-weight:800;border-top:2px solid #111}
+.bill .foot{margin-top:24px;text-align:center;font-size:12px;color:#555}
+.bill .sign{display:flex;justify-content:space-between;margin-top:46px;font-size:12px}
+.bill .sign span{border-top:1px solid #111;padding-top:5px;min-width:140px;text-align:center}
+.stamp{display:inline-block;border:2px solid;padding:2px 12px;border-radius:6px;font-weight:800;transform:rotate(-4deg)}
+.stamp.paid{color:#0f7a55}.stamp.due{color:#b83f3b}
+/* responsive */
+@media(max-width:1200px){.stats{grid-template-columns:repeat(3,1fr)}.form-grid{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:900px){
+ .sidebar{transform:translateX(-100%)}.sidebar.open{transform:none}
+ main{margin-left:0}.hamb{display:block}
+ .topbar{padding:10px 14px}.topbar .date{display:none}.content{padding:16px 12px}
+ .grid2e{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+ .stats{grid-template-columns:repeat(2,1fr);gap:10px}
+ .stat{padding:12px;gap:10px;flex-direction:column;align-items:flex-start}
+ .stat h3{font-size:18px}
+ .form-grid,.form-grid.two{grid-template-columns:1fr}
+ .card{padding:15px}
+ .toolbar .field{min-width:100%}
+ table.rt thead{display:none}
+ table.rt,table.rt tbody,table.rt tr,table.rt td{display:block;width:100%}
+ table.rt tr{border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:10px;background:#fff}
+ table.rt td{display:flex;justify-content:space-between;gap:12px;border:0;padding:5px 0;text-align:right;align-items:flex-start}
+ table.rt td::before{content:attr(data-label);font-weight:700;color:var(--muted);text-align:left;flex:0 0 auto}
+ table.rt td.actions{justify-content:flex-end;flex-wrap:wrap;white-space:normal}
+ table.rt td.actions::before{display:none}
+ .bill table{display:table}.bill table thead{display:table-header-group}.bill table tr{display:table-row;border:0;padding:0;margin:0}.bill table td{display:table-cell;padding:8px 6px;border-bottom:1px solid #ddd}.bill table td::before{display:none}
+ .bill-meta{grid-template-columns:1fr}
+ .modal{padding:12px 8px}.modal-box{padding:16px}
+ .room-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+ @page{margin:12mm}
+ body{background:#fff}
+ .sidebar,.topbar,.overlay,.toast-wrap,.no-print,.hamb,.toolbar,.tabs{display:none!important}
+ main{margin:0}.content{padding:0}
+ .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+ body.printing-bill #app,body.printing-bill .toast-wrap{display:none!important}
+ body.printing-bill .modal{position:static;background:none;padding:0;display:block}
+ body.printing-bill .modal-box{box-shadow:none;max-width:none;padding:0;animation:none}
 }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header"><div class="brand"><h1>PS RESIDENCY</h1><p>HOTEL MANAGEMENT SYSTEM</p></div></div>
 
-  <div class="card login-wrap" id="loginBox">
-    <h2>Admin Login</h2><p class="small">Sign in to manage PS Residency</p>
-    <input id="email" type="email" placeholder="Admin Email" autocomplete="username">
-    <input id="password" type="password" placeholder="Admin Password" autocomplete="current-password">
-    <button id="loginBtn">LOGIN TO DASHBOARD</button><p id="loginMessage"></p>
-  </div>
-
-  <div id="dashboard" class="hidden">
-    <div class="card">
-      <div class="section-heading"><div><h2>Welcome, Admin</h2><p id="adminEmail" class="small"></p></div><button class="logout" id="logoutBtn">LOGOUT</button></div>
-    </div>
-
-    <div class="stats">
-      <div class="stat"><p>Total Rooms</p><h2 id="totalRooms">0</h2></div>
-      <div class="stat"><p>Occupied</p><h2 id="occupiedRooms">0</h2></div>
-      <div class="stat"><p>Available</p><h2 id="availableRooms">0</h2></div>
-      <div class="stat"><p>Today's Income</p><h2 id="todayIncome">₹0</h2></div>
-      <div class="stat"><p>Today's Expense</p><h2 id="todayExpense">₹0</h2></div>
-      <div class="stat"><p>Today's Net</p><h2 id="todayNet">₹0</h2></div>
-      <div class="stat"><p>Booking Requests</p><h2 id="bookingCount">0</h2></div>
-    </div>
-
-    <div class="card">
-      <h2>Guest Check-in</h2><p class="small">Enter guest details and assign an available room</p>
-      <form id="checkinForm">
-        <div class="form-grid">
-          <div class="field"><label>Guest Name *</label><input id="guestName" required placeholder="Guest full name"></div>
-          <div class="field"><label>Mobile Number *</label><input id="guestPhone" type="tel" pattern="[0-9]{10}" maxlength="10" required placeholder="10 digit mobile number"></div>
-          <div class="field"><label>ID Proof Type</label><select id="idType"><option value="">Select ID proof</option><option>Aadhaar</option><option>Driving Licence</option><option>Voter ID</option><option>Passport</option><option>Other</option></select></div>
-          <div class="field"><label>Last 4 digits only (optional)</label><input id="idLast4" maxlength="4" pattern="[0-9]{4}" placeholder="Last 4 digits"></div>
-          <div class="field"><label>Room Number *</label><select id="roomSelect" required><option value="">Select available room</option></select></div>
-          <div class="field"><label>Number of Guests *</label><input id="guestCount" type="number" min="1" max="10" value="1" required></div>
-          <div class="field"><label>Check-in Date *</label><input id="checkinDate" type="date" required></div>
-          <div class="field"><label>Check-in Time *</label><input id="checkinTime" type="time" required></div>
-          <div class="field"><label>Expected Check-out Date *</label><input id="checkoutDate" type="date" required></div>
-          <div class="field"><label>Expected Check-out Time *</label><input id="checkoutTime" type="time" required></div>
-          <div class="field"><label>Advance Amount (₹)</label><input id="advance" type="number" min="0" step="1" value="0" required></div>
-          <div class="field"><label>Payment Method</label><select id="paymentMethod"><option>Cash</option><option>GPay</option><option>Card</option></select></div>
-        </div>
-        <div class="summary">
-          <p><span>Room Rate / Day</span><strong id="rateDisplay">₹0</strong></p>
-          <p><span>Number of Days</span><strong id="daysDisplay">0</strong></p>
-          <p><span>Estimated Room Amount</span><strong id="amountDisplay">₹0</strong></p>
-          <p><span>Advance</span><strong id="advanceDisplay">₹0</strong></p>
-          <p><span>Balance</span><strong id="balanceDisplay">₹0</strong></p>
-        </div>
-        <button id="checkinBtn" type="submit">CONFIRM CHECK-IN</button><p id="checkinMessage"></p>
-      </form>
-    </div>
-
-    <div class="card"><h2>Active Guests</h2><p class="small">Currently checked-in guests</p><div id="guestList" class="guest-grid"></div><p id="guestMessage" class="small"></p></div>
-
-    <div class="card">
-      <h2>Daily Expense Management</h2><p class="small">Record hotel daily expenses</p>
-      <form id="expenseForm">
-        <div class="form-grid">
-          <div class="field"><label>Expense Date *</label><input type="date" id="expenseDate" required></div>
-          <div class="field"><label>Category *</label><select id="expenseCategory" required><option value="">Select Category</option><option>Food</option><option>Salary</option><option>Electricity</option><option>Water</option><option>Maintenance</option><option>Cleaning</option><option>Purchase</option><option>Fuel</option><option>Other</option></select></div>
-          <div class="field"><label>Description *</label><input id="expenseDescription" required maxlength="180" placeholder="Enter expense details"></div>
-          <div class="field"><label>Amount (₹) *</label><input type="number" id="expenseAmount" min="0.01" step="0.01" required placeholder="Enter amount"></div>
-          <div class="field full"><label>Payment Method *</label><select id="expenseMethod" required><option>Cash</option><option>GPay</option><option>Card</option><option>Bank Transfer</option></select></div>
-        </div>
-        <button type="submit" id="expenseBtn">SAVE EXPENSE</button><p id="expenseMessage"></p>
-      </form>
-    </div>
-
-    <div class="card"><h2>Expense History</h2><div id="expenseList" class="guest-grid"></div><p id="expenseHistoryMessage" class="small"></p></div>
-
-    <div class="card">
-      <h2>Monthly Income & Expense Report</h2>
-      <label for="reportMonth">Select Month</label><input type="month" id="reportMonth">
-      <div class="report-summary">
-        <div class="report-box"><span>Monthly Income (collections)</span><strong id="monthlyIncome">₹0</strong></div>
-        <div class="report-box"><span>Monthly Expenses</span><strong id="monthlyExpense">₹0</strong></div>
-        <div class="report-box"><span>Monthly Net</span><strong id="monthlyNet">₹0</strong></div>
-      </div>
-      <p class="small">Income is money actually collected (advance and checkout payments), grouped by payment date. It is not the full room booking value.</p>
-    </div>
-
-    <div class="card">
-      <h2>Room Management</h2><p class="small">21 rooms – Room 8 to Room 28</p>
-      <button id="setupRooms">INITIALIZE 21 ROOMS</button><p id="roomMessage"></p><div id="roomList" class="room-grid"></div>
-    </div>
-    <p id="status"></p>
+<!-- LOGIN -->
+<div class="login-wrap" id="loginView">
+  <div class="login-card">
+    <div class="logo">PS</div>
+    <h2>PS Residency</h2>
+    <p class="muted" style="margin:4px 0 0">Hotel Management · Admin Login</p>
+    <form id="loginForm">
+      <div class="field"><label>Admin Email</label><input id="email" type="email" required autocomplete="username" placeholder="admin@example.com"></div>
+      <div class="field"><label>Password</label><input id="password" type="password" required autocomplete="current-password" placeholder="••••••••"></div>
+      <button class="btn full" id="loginBtn" type="submit" style="margin-top:18px;padding:12px">LOGIN TO DASHBOARD</button>
+      <p class="err" id="loginMessage"></p>
+    </form>
   </div>
 </div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><h1>PS RESIDENCY</h1><p>HOTEL MANAGEMENT</p></div>
+    <nav class="nav" id="nav">
+      <button data-page="dashboard"><span class="ico">📊</span>Dashboard</button>
+      <button data-page="checkin"><span class="ico">🛎️</span>New Check-in</button>
+      <button data-page="guests"><span class="ico">👥</span>Guests<span class="badge-n hidden" id="navGuests">0</span></button>
+      <button data-page="bookings"><span class="ico">📅</span>Booking Requests<span class="badge-n hidden" id="navBookings">0</span></button>
+      <button data-page="rooms"><span class="ico">🛏️</span>Rooms</button>
+      <button data-page="expenses"><span class="ico">🧾</span>Expenses</button>
+      <button data-page="payments"><span class="ico">💰</span>Payments</button>
+      <button data-page="reports"><span class="ico">📈</span>Reports</button>
+      <button data-page="settings"><span class="ico">⚙️</span>Settings</button>
+    </nav>
+    <div class="side-foot"><div class="who" id="adminEmail"></div><button class="btn dark full" id="logoutBtn">LOGOUT</button></div>
+  </aside>
+  <div class="overlay hidden" id="overlay"></div>
+
+  <main>
+    <div class="topbar">
+      <button class="hamb" id="hamb" aria-label="Menu">☰</button>
+      <h2 id="pageTitle">Dashboard</h2>
+      <span class="date" id="todayLabel"></span>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section class="page" id="page-dashboard">
+        <div class="stats" id="dashStats"></div>
+        <div class="grid2">
+          <div class="card"><div class="card-head"><h3>Last 7 Days · Income vs Expense</h3><div class="legend" style="margin:0"><span><i style="background:var(--green)"></i>Income</span><span><i style="background:var(--red)"></i>Expense</span></div></div><div id="chart7"></div></div>
+          <div class="card"><div class="card-head"><h3>Room Occupancy</h3></div><div id="donutBox"></div></div>
+        </div>
+        <div class="grid2e">
+          <div class="card"><div class="card-head"><h3>Room Board</h3><span class="small">Tap a red room to check out</span></div><div class="chips" id="roomBoard"></div><div class="legend"><span><i style="background:#15966a"></i>Available</span><span><i style="background:#d9534f"></i>Occupied</span><span><i style="background:#e0902a"></i>Maintenance</span></div></div>
+          <div class="card"><div class="card-head"><h3>Due for Check-out</h3><span class="small">Today or overdue</span></div><div id="dueList" class="mini-list"></div></div>
+        </div>
+        <div class="grid2e">
+          <div class="card"><div class="card-head"><h3>This Month · Expense by Category</h3></div><div id="dashCats"></div></div>
+          <div class="card"><div class="card-head"><h3>Recent Payments</h3><button class="btn sm outline" data-act="goPage" data-id="payments">View all</button></div><div id="recentPay" class="mini-list"></div></div>
+        </div>
+      </section>
+
+      <!-- CHECK-IN -->
+      <section class="page" id="page-checkin">
+        <div class="card">
+          <div class="card-head"><div><h3>Guest Check-in</h3><p class="small" style="margin:3px 0 0">Select a room, enter guest details. You can change the room rate manually.</p></div></div>
+          <form id="ciForm">
+            <div class="form-grid">
+              <div class="field"><label>Guest Name *</label><input id="ciName" required placeholder="Guest full name"></div>
+              <div class="field"><label>Mobile Number *</label><input id="ciPhone" type="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" required placeholder="10 digit mobile"></div>
+              <div class="field"><label>Number of Guests *</label><input id="ciGuests" type="number" min="1" max="20" value="1" required></div>
+              <div class="field"><label>ID Proof Type</label><select id="ciIdType"><option value="">Select ID proof</option><option>Aadhaar</option><option>Driving Licence</option><option>Voter ID</option><option>Passport</option><option>Other</option></select></div>
+              <div class="field"><label>ID last 4 digits (optional)</label><input id="ciIdLast4" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="Last 4 digits"></div>
+              <div class="field"><label>Room *</label><select id="ciRoom" required></select></div>
+              <div class="field"><label>Check-in Date *</label><input id="ciInDate" type="date" required></div>
+              <div class="field"><label>Check-in Time *</label><input id="ciInTime" type="time" required></div>
+              <div class="field"><label>Rate / Day (₹) * <span class="muted">(editable)</span></label><input id="ciRate" type="number" min="0" step="1" required></div>
+              <div class="field"><label>Expected Check-out Date *</label><input id="ciOutDate" type="date" required></div>
+              <div class="field"><label>Expected Check-out Time *</label><input id="ciOutTime" type="time" required></div>
+              <div class="field"><label>Extra Charges (₹)</label><input id="ciExtra" type="number" min="0" step="1" value="0"></div>
+              <div class="field"><label>Discount (₹)</label><input id="ciDisc" type="number" min="0" step="1" value="0"></div>
+              <div class="field"><label>Advance Amount (₹)</label><input id="ciAdv" type="number" min="0" step="1" value="0"></div>
+              <div class="field"><label>Payment Method</label><select id="ciMethod"><option>Cash</option><option>GPay</option><option>Card</option></select></div>
+              <div class="field full"><label>Notes (optional)</label><input id="ciNotes" maxlength="200" placeholder="Any special note"></div>
+            </div>
+            <div class="summary" id="ciSummary"></div>
+            <button class="btn full" id="ciBtn" type="submit" style="margin-top:16px;padding:13px">CONFIRM CHECK-IN</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- GUESTS -->
+      <section class="page" id="page-guests">
+        <div class="card">
+          <div class="tabs" id="gTabs">
+            <button data-tab="active" class="active">In-house</button><button data-tab="out">Checked-out</button><button data-tab="dues">Pending Dues</button><button data-tab="all">All</button>
+          </div>
+          <div class="toolbar"><div class="field"><label>Search</label><input id="gSearch" placeholder="Name, mobile or room number"></div><div class="field auto"><button class="btn" data-act="goPage" data-id="checkin">＋ New Check-in</button></div></div>
+          <div class="tw" id="guestTable"></div>
+        </div>
+      </section>
+
+      <!-- BOOKINGS -->
+      <section class="page" id="page-bookings">
+        <div class="card"><div class="card-head"><div><h3>Booking Requests</h3><p class="small" style="margin:3px 0 0">Requests received from your website</p></div></div><div class="tw" id="bookingTable"></div></div>
+      </section>
+
+      <!-- ROOMS -->
+      <section class="page" id="page-rooms">
+        <div class="card">
+          <div class="card-head"><div><h3>Room Management</h3><p class="small" style="margin:3px 0 0">Add, edit rate/type, mark maintenance or delete rooms</p></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn outline hidden" id="initRooms">Initialize 21 Rooms</button><button class="btn" data-act="addRoom">＋ Add Room</button></div></div>
+          <div class="room-grid" id="roomGrid"></div>
+        </div>
+      </section>
+
+      <!-- EXPENSES -->
+      <section class="page" id="page-expenses">
+        <div class="card">
+          <div class="card-head"><h3>Expense Management</h3><button class="btn" data-act="addExp">＋ Add Expense</button></div>
+          <div class="toolbar">
+            <div class="field"><label>Month</label><input type="month" id="eMonth"></div>
+            <div class="field"><label>Category</label><select id="eCat"></select></div>
+            <div class="field"><label>Search</label><input id="eSearch" placeholder="Description"></div>
+            <div class="field auto"><button class="btn outline" id="eClear">Clear</button></div>
+          </div>
+          <div class="summary" style="margin:0 0 14px"><p style="margin:0"><span>Total (filtered)</span><strong id="eTotal">₹0</strong></p></div>
+          <div class="tw" id="expenseTable"></div>
+        </div>
+      </section>
+
+      <!-- PAYMENTS -->
+      <section class="page" id="page-payments">
+        <div class="card">
+          <div class="card-head"><h3>Payment Records</h3></div>
+          <div class="toolbar">
+            <div class="field"><label>Month</label><input type="month" id="pMonth"></div>
+            <div class="field"><label>Search</label><input id="pSearch" placeholder="Guest, room, method"></div>
+            <div class="field auto"><button class="btn outline" id="pClear">Clear</button></div>
+          </div>
+          <div class="summary" style="margin:0 0 14px"><p style="margin:0"><span>Total collected (filtered)</span><strong id="pTotal">₹0</strong></p></div>
+          <div class="tw" id="paymentTable"></div>
+        </div>
+      </section>
+
+      <!-- REPORTS -->
+      <section class="page" id="page-reports">
+        <div class="card">
+          <div class="toolbar" style="margin:0"><div class="field"><label>Select Month</label><input type="month" id="rMonth"></div>
+            <div class="field auto"><button class="btn outline" id="rCsv">⬇ Export CSV</button></div>
+            <div class="field auto"><button class="btn" id="rPrint">🖨 Print Report</button></div></div>
+        </div>
+        <div class="stats" id="repStats"></div>
+        <div class="card"><div class="card-head"><h3>Daily Income vs Expense</h3><div class="legend" style="margin:0"><span><i style="background:var(--green)"></i>Income</span><span><i style="background:var(--red)"></i>Expense</span></div></div><div class="chart-scroll"><div id="repChart" style="min-width:680px"></div></div></div>
+        <div class="grid2e">
+          <div class="card"><div class="card-head"><h3>Expense by Category</h3></div><div id="repCats"></div></div>
+          <div class="card"><div class="card-head"><h3>Income by Payment Method</h3></div><div id="repMethods"></div></div>
+        </div>
+        <p class="small">Income = money actually collected (advance, checkout and due payments), grouped by payment date. It is not the full booking value.</p>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="page" id="page-settings">
+        <div class="card">
+          <div class="card-head"><div><h3>Hotel & Bill Settings</h3><p class="small" style="margin:3px 0 0">These details appear on the printed bill</p></div></div>
+          <form id="setForm">
+            <div class="form-grid two">
+              <div class="field"><label>Hotel Name</label><input id="sName"></div>
+              <div class="field"><label>Phone</label><input id="sPhone"></div>
+              <div class="field"><label>Email</label><input id="sEmail"></div>
+              <div class="field"><label>GSTIN (optional)</label><input id="sGst"></div>
+              <div class="field full"><label>Address</label><input id="sAddress"></div>
+              <div class="field"><label>Default Check-in Time</label><input type="time" id="sIn"></div>
+              <div class="field"><label>Default Check-out Time</label><input type="time" id="sOut"></div>
+              <div class="field full"><label>Bill Footer Note</label><input id="sFooter"></div>
+            </div>
+            <button class="btn" type="submit" style="margin-top:16px">SAVE SETTINGS</button>
+          </form>
+        </div>
+        <div class="card"><div class="card-head"><div><h3>Account</h3><p class="small" style="margin:3px 0 0">Send a password reset link to your admin email</p></div><button class="btn outline" id="resetPw">Send Password Reset Email</button></div></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div class="modal hidden" id="modal"><div class="modal-box" id="modalBox"></div></div>
+<div class="toast-wrap" id="toasts"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+/* ============ FIREBASE ============ */
 const firebaseConfig = {
   apiKey: "AIzaSyCpQhwNOFAjysHIOd_-7JkE2_FlKyHk9WI",
   authDomain: "ps-residency-managemant.firebaseapp.com",
@@ -156,222 +392,511 @@ const firebaseConfig = {
   measurementId: "G-1Z9LYZE1CE"
 };
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.firestore();
+const auth=firebase.auth(), db=firebase.firestore(), FV=firebase.firestore.FieldValue;
+
+/* ============ HELPERS ============ */
 const $=id=>document.getElementById(id);
-const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
-let unsubscribeRooms=null,unsubscribePayments=null,unsubscribeBookings=null,unsubscribeStays=null,unsubscribeExpenses=null;
-let currentRooms=[],allPayments=[],allExpenses=[];
+const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num=v=>Number(v)||0;
+const money=n=>"₹"+num(n).toLocaleString("en-IN",{maximumFractionDigits:2});
+const pad=n=>String(n).padStart(2,"0");
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function localDate(d=new Date()){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function addDays(s,n){const d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return localDate(d);}
+function dateDays(a,b){return Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/86400000);}
+function fmtDate(s){if(!s)return "-";if(typeof s!=="string"){if(s.toDate)s=localDate(s.toDate());else return String(s);}const p=s.slice(0,10).split("-");if(p.length<3)return esc(s);return p[2]+" "+MON[+p[1]-1]+" "+p[0];}
+function shortDate(s){const p=s.split("-");return p[2]+" "+MON[+p[1]-1];}
+function fmtTime(t){if(!t)return "";const [h,m]=t.split(":").map(Number);return ((h%12)||12)+":"+pad(m)+" "+(h>=12?"PM":"AM");}
+const tsVal=o=>(o.createdAt&&o.createdAt.seconds)||9e12;
+const paidOf=s=>num(s.totalAmount)-num(s.balance);
+const pick=(o,keys)=>{for(const k of keys){if(o[k]!==undefined&&o[k]!==null&&o[k]!=="")return o[k];}return "";};
+function toast(msg,type="ok"){const t=document.createElement("div");t.className="toast "+type;t.textContent=msg;$("toasts").appendChild(t);setTimeout(()=>t.remove(),3800);}
 
-function localDate(){
-  const d=new Date(),offset=d.getTimezoneOffset();
-  return new Date(d.getTime()-offset*60000).toISOString().slice(0,10);
-}
-function dateDays(start,end){
-  const a=new Date(start+"T00:00:00"),b=new Date(end+"T00:00:00");
-  return Math.ceil((b-a)/86400000);
-}
-function refreshFinancials(){
-  const today=localDate();
-  const income=allPayments.filter(p=>p.date===today).reduce((s,p)=>s+Number(p.amount||0),0);
-  const expense=allExpenses.filter(e=>e.date===today).reduce((s,e)=>s+Number(e.amount||0),0);
-  $("todayIncome").innerText=money(income);
-  $("todayExpense").innerText=money(expense);
-  $("todayNet").innerText=money(income-expense);
-  renderMonthlyReport();
-}
-function renderMonthlyReport(){
-  const month=$("reportMonth").value||localDate().slice(0,7);
-  const income=allPayments.filter(p=>(p.date||"").slice(0,7)===month).reduce((s,p)=>s+Number(p.amount||0),0);
-  const expense=allExpenses.filter(e=>(e.date||"").slice(0,7)===month).reduce((s,e)=>s+Number(e.amount||0),0);
-  $("monthlyIncome").innerText=money(income);
-  $("monthlyExpense").innerText=money(expense);
-  $("monthlyNet").innerText=money(income-expense);
-}
-function getEstimate(){
-  const room=currentRooms.find(r=>r.id===$("roomSelect").value);
-  const rate=room?Number(room.rate):0,start=$("checkinDate").value,end=$("checkoutDate").value;
-  const days=start&&end&&end>start?dateDays(start,end):0;
-  const amount=rate*days,advance=Number($("advance").value||0);
-  $("rateDisplay").innerText=money(rate);$("daysDisplay").innerText=days;
-  $("amountDisplay").innerText=money(amount);$("advanceDisplay").innerText=money(advance);
-  $("balanceDisplay").innerText=money(amount-advance);
-  return {room,rate,days,amount,advance};
-}
-["roomSelect","checkinDate","checkoutDate","advance"].forEach(id=>{
-  $(id).addEventListener("change",getEstimate);$(id).addEventListener("input",getEstimate);
-});
-$("checkinDate").value=localDate();
-$("checkoutDate").value=localDate();
-$("checkinTime").value="12:00";$("checkoutTime").value="11:00";
-$("expenseDate").value=localDate();$("reportMonth").value=localDate().slice(0,7);
-$("reportMonth").addEventListener("change",renderMonthlyReport);
+/* ============ STATE ============ */
+const SETTINGS_DEFAULT={name:"PS Residency",address:"",phone:"",email:"",gstin:"",footer:"Thank you for staying with us. Visit again!",inTime:"12:00",outTime:"11:00"};
+let rooms=[],stays=[],payments=[],expenses=[],bookings=[],settings={...SETTINGS_DEFAULT},unsubs=[];
+let currentPage="dashboard",guestTab="active",pendingBookingId=null;
+const CATEGORIES=["Food","Salary","Electricity","Water","Maintenance","Cleaning","Purchase","Fuel","Other"];
+const PAGE_TITLES={dashboard:"Dashboard",checkin:"New Check-in",guests:"Guests",bookings:"Booking Requests",rooms:"Rooms",expenses:"Expenses",payments:"Payments",reports:"Reports",settings:"Settings"};
 
-$("loginBtn").onclick=async()=>{
-  const email=$("email").value.trim(),password=$("password").value;
-  if(!email||!password){$("loginMessage").innerText="Enter email and password";return;}
-  try{await auth.signInWithEmailAndPassword(email,password);$("loginMessage").innerText="";}
-  catch(error){$("loginMessage").innerText=error.message;}
+/* ============ NAVIGATION ============ */
+function showPage(p){
+  if(!PAGE_TITLES[p])p="dashboard";
+  currentPage=p;
+  document.querySelectorAll(".page").forEach(el=>el.classList.toggle("active",el.id==="page-"+p));
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===p));
+  $("pageTitle").textContent=PAGE_TITLES[p];
+  closeSidebar();
+  if(location.hash!=="#"+p)history.replaceState(null,"","#"+p);
+  window.scrollTo(0,0);
+  renderAll();
+}
+function openSidebar(){$("sidebar").classList.add("open");$("overlay").classList.remove("hidden");}
+function closeSidebar(){$("sidebar").classList.remove("open");$("overlay").classList.add("hidden");}
+$("hamb").onclick=openSidebar;$("overlay").onclick=closeSidebar;
+$("nav").onclick=e=>{const b=e.target.closest("button[data-page]");if(b)showPage(b.dataset.page);};
+window.addEventListener("hashchange",()=>{const p=location.hash.slice(1);if(p&&p!==currentPage&&!$("app").classList.contains("hidden"))showPage(p);});
+
+/* ============ MODAL ============ */
+function openModal(html,wide){$("modalBox").className="modal-box"+(wide?" wide":"");$("modalBox").innerHTML=html;$("modal").classList.remove("hidden");document.body.style.overflow="hidden";}
+function closeModal(){$("modal").classList.add("hidden");$("modalBox").innerHTML="";document.body.style.overflow="";document.body.classList.remove("printing-bill");}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("modal").classList.contains("hidden"))closeModal();});
+function mHead(title){return `<div class="modal-head"><h3>${esc(title)}</h3><button class="x" type="button" data-act="closeModal">✕</button></div>`;}
+function opts(list,sel){return list.map(v=>`<option${v===sel?" selected":""}>${esc(v)}</option>`).join("");}
+function statusBadge(st){const m={"Checked-in":"blue","Checked-out":"gray",Available:"green",Occupied:"red",Maintenance:"amber",Pending:"amber",Confirmed:"green",Rejected:"red"};return `<span class="badge ${m[st]||"gray"}">${esc(st||"Pending")}</span>`;}
+
+/* ============ AUTH ============ */
+$("loginForm").onsubmit=async e=>{
+  e.preventDefault();
+  const btn=$("loginBtn");btn.disabled=true;$("loginMessage").textContent="";
+  try{await auth.signInWithEmailAndPassword($("email").value.trim(),$("password").value);}
+  catch(err){
+    const c=err.code||"";
+    $("loginMessage").textContent=(c.includes("invalid-credential")||c.includes("wrong-password")||c.includes("user-not-found"))?"Wrong email or password.":c.includes("too-many")?"Too many attempts. Try again later.":err.message;
+  }finally{btn.disabled=false;}
 };
 auth.onAuthStateChanged(user=>{
-  if(user){$("loginBox").classList.add("hidden");$("dashboard").classList.remove("hidden");$("adminEmail").innerText=user.email||"Admin";startDashboard();}
-  else{stopDashboard();$("loginBox").classList.remove("hidden");$("dashboard").classList.add("hidden");}
-});
-
-function startDashboard(){
-  unsubscribeRooms=db.collection("rooms").onSnapshot(snapshot=>{
-    currentRooms=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-    const occupied=currentRooms.filter(r=>r.status==="Occupied").length;
-    $("totalRooms").innerText=currentRooms.length;$("occupiedRooms").innerText=occupied;$("availableRooms").innerText=currentRooms.length-occupied;
-    const select=$("roomSelect"),previous=select.value;
-    select.innerHTML='<option value="">Select available room</option>';
-    currentRooms.filter(r=>r.status==="Available").sort((a,b)=>a.number-b.number).forEach(room=>{
-      const option=document.createElement("option");option.value=room.id;
-      option.textContent="Room "+room.number+" – "+room.type+" – "+money(room.rate);select.appendChild(option);
-    });
-    if([...select.options].some(o=>o.value===previous))select.value=previous;
-    const list=$("roomList");list.innerHTML="";
-    [...currentRooms].sort((a,b)=>a.number-b.number).forEach(room=>{
-      const div=document.createElement("div");div.className="room";
-      const info=document.createElement("div"),title=document.createElement("strong"),type=document.createElement("span"),rate=document.createElement("span"),status=document.createElement("span");
-      title.textContent="Room "+room.number;type.textContent=room.type;rate.textContent=money(room.rate)+" / day";
-      status.textContent=room.status;status.className=room.status==="Occupied"?"occupied":"available";
-      info.append(title,type,rate,status);div.append(info);list.appendChild(div);
-    });
-    getEstimate();
-  },error=>{$("status").innerText="Rooms error: "+error.message;});
-
-  unsubscribePayments=db.collection("payments").onSnapshot(snapshot=>{
-    allPayments=snapshot.docs.map(doc=>doc.data());refreshFinancials();
-  },error=>{$("status").innerText="Payments error: "+error.message;});
-
-  unsubscribeBookings=db.collection("bookingRequests").onSnapshot(snapshot=>{
-    $("bookingCount").innerText=snapshot.size;
-  },error=>{$("status").innerText="Bookings error: "+error.message;});
-
-  unsubscribeStays=db.collection("stays").where("status","==","Checked-in").onSnapshot(snapshot=>{
-    renderGuests(snapshot);
-  },error=>{$("guestMessage").innerText="Guest records: "+error.message;});
-
-  unsubscribeExpenses=db.collection("expenses").onSnapshot(snapshot=>{
-    allExpenses=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}));
-    renderExpenses();
-    refreshFinancials();
-  },error=>{$("expenseHistoryMessage").innerText="Expense records: "+error.message;});
-}
-function renderGuests(snapshot){
-  const list=$("guestList");list.innerHTML="";
-  if(snapshot.empty){$("guestMessage").innerText="No active guests currently.";return;}
-  $("guestMessage").innerText="";
-  snapshot.docs.forEach(doc=>{
-    const stay=doc.data(),div=document.createElement("div");div.className="guest";
-    const name=document.createElement("strong"),details=document.createElement("span"),phone=document.createElement("span"),dates=document.createElement("span"),balance=document.createElement("span"),button=document.createElement("button");
-    name.textContent=stay.guestName;details.textContent="Room "+stay.roomNumber+" · "+stay.roomType;
-    phone.textContent="Mobile: "+stay.phone;
-    dates.textContent="Check-in: "+stay.checkinDate+" "+stay.checkinTime+" | Expected checkout: "+stay.checkoutDate+" "+stay.checkoutTime;
-    balance.textContent="Balance: "+money(stay.balance);button.textContent="CHECK OUT";button.onclick=()=>checkoutGuest(doc.id,stay);
-    div.append(name,details,phone,dates,balance,button);list.appendChild(div);
-  });
-}
-function renderExpenses(){
-  const list=$("expenseList");list.innerHTML="";
-  const sorted=[...allExpenses].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
-  if(!sorted.length){$("expenseHistoryMessage").innerText="No expense records yet.";return;}
-  $("expenseHistoryMessage").innerText="Showing "+sorted.length+" expense record(s).";
-  sorted.slice(0,100).forEach(item=>{
-    const div=document.createElement("div");div.className="expense";
-    const title=document.createElement("strong"),date=document.createElement("span"),category=document.createElement("span"),desc=document.createElement("span"),amount=document.createElement("span"),method=document.createElement("span");
-    title.textContent=money(item.amount);date.textContent="Date: "+(item.date||"");
-    category.textContent="Category: "+(item.category||"");desc.textContent=item.description||"";
-    method.textContent="Payment: "+(item.method||"");amount.textContent=""; 
-    div.append(title,date,category,desc,method);list.appendChild(div);
-  });
-}
-$("expenseForm").onsubmit=async e=>{
-  e.preventDefault();
-  const date=$("expenseDate").value,category=$("expenseCategory").value,description=$("expenseDescription").value.trim();
-  const amount=Number($("expenseAmount").value),method=$("expenseMethod").value,button=$("expenseBtn");
-  if(!date||!category||!description||!Number.isFinite(amount)||amount<=0){$("expenseMessage").innerText="Please enter all valid expense details.";return;}
-  button.disabled=true;$("expenseMessage").innerText="Saving expense...";
-  try{
-    await db.collection("expenses").add({
-      date,category,description,amount,method,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-      createdBy:auth.currentUser?auth.currentUser.uid:""
-    });
-    $("expenseForm").reset();$("expenseDate").value=localDate();
-    $("expenseMessage").innerText="Expense saved successfully!";
-  }catch(error){$("expenseMessage").innerText="Could not save: "+error.message;}
-  finally{button.disabled=false;}
-};
-
-$("checkinForm").onsubmit=async e=>{
-  e.preventDefault();
-  const message=$("checkinMessage"),button=$("checkinBtn"),estimate=getEstimate();
-  const guestName=$("guestName").value.trim(),phone=$("guestPhone").value.trim();
-  const start=$("checkinDate").value,end=$("checkoutDate").value,checkinTime=$("checkinTime").value,checkoutTime=$("checkoutTime").value;
-  const advance=Number($("advance").value||0);
-  if(!estimate.room){message.innerText="Please select an available room.";return;}
-  if(!guestName||!/^[0-9]{10}$/.test(phone)){message.innerText="Enter guest name and valid 10 digit mobile number.";return;}
-  if(!start||!end||end<=start||!checkinTime||!checkoutTime){message.innerText="Please enter valid check-in and checkout dates and times.";return;}
-  if(estimate.days<1||advance<0||advance>estimate.amount){message.innerText="Check the dates and advance amount.";return;}
-  button.disabled=true;message.innerText="Saving check-in...";
-  try{
-    const stayRef=db.collection("stays").doc(),paymentRef=db.collection("payments").doc(),roomRef=db.collection("rooms").doc(estimate.room.id);
-    await db.runTransaction(async transaction=>{
-      const roomDoc=await transaction.get(roomRef);
-      if(!roomDoc.exists||roomDoc.data().status!=="Available")throw new Error("This room is no longer available. Please select another room.");
-      const stayData={
-        guestName,phone,idType:$("idType").value||"",idLast4:$("idLast4").value||"",
-        guestCount:Number($("guestCount").value),roomId:estimate.room.id,roomNumber:estimate.room.number,roomType:estimate.room.type,
-        rate:estimate.rate,days:estimate.days,totalAmount:estimate.amount,advance,balance:estimate.amount-advance,
-        paymentMethod:$("paymentMethod").value,checkinDate:start,checkinTime,checkoutDate:end,checkoutTime,
-        status:"Checked-in",createdAt:firebase.firestore.FieldValue.serverTimestamp()
-      };
-      transaction.set(stayRef,stayData);transaction.update(roomRef,{status:"Occupied",currentStayId:stayRef.id});
-      if(advance>0)transaction.set(paymentRef,{
-        stayId:stayRef.id,roomNumber:estimate.room.number,amount:advance,method:$("paymentMethod").value,
-        date:localDate(),type:"Advance",createdAt:firebase.firestore.FieldValue.serverTimestamp()
-      });
-    });
-    message.innerText="Guest checked in successfully!";$("checkinForm").reset();
-    $("checkinDate").value=localDate();$("checkoutDate").value=localDate();
-    $("checkinTime").value="12:00";$("checkoutTime").value="11:00";$("guestCount").value="1";$("advance").value="0";getEstimate();
-  }catch(error){message.innerText=error.message;}
-  finally{button.disabled=false;}
-};
-
-async function checkoutGuest(stayId,stay){
-  const remaining=Math.max(0,Number(stay.balance||0));let paid=0,method="Cash";
-  if(remaining>0){
-    const answer=prompt("Remaining balance: "+money(remaining)+"\nEnter amount received now (enter 0 if unpaid):");
-    if(answer===null)return;paid=Number(answer);
-    if(!Number.isFinite(paid)||paid<0||paid>remaining){alert("Enter a valid amount up to "+money(remaining));return;}
-    if(paid>0){method=prompt("Payment method: Cash, GPay, or Card","Cash");if(!["Cash","GPay","Card"].includes(method)){alert("Enter Cash, GPay, or Card.");return;}}
+  if(user){
+    $("loginView").classList.add("hidden");$("app").classList.remove("hidden");
+    $("adminEmail").textContent=user.email||"Admin";
+    startListeners();
+    showPage(location.hash.slice(1)||"dashboard");
+  }else{
+    stopListeners();$("app").classList.add("hidden");$("loginView").classList.remove("hidden");
   }
-  if(!confirm("Confirm checkout for "+stay.guestName+" – Room "+stay.roomNumber+"?"))return;
-  try{
-    const stayRef=db.collection("stays").doc(stayId),roomRef=db.collection("rooms").doc(stay.roomId),paymentRef=db.collection("payments").doc();
-    await db.runTransaction(async transaction=>{
-      const stayDoc=await transaction.get(stayRef),roomDoc=await transaction.get(roomRef);
-      if(!stayDoc.exists||stayDoc.data().status!=="Checked-in")throw new Error("This guest is already checked out.");
-      if(!roomDoc.exists||roomDoc.data().currentStayId!==stayId)throw new Error("Room record does not match this guest. Please contact support.");
-      const latestBalance=Number(stayDoc.data().balance||0);
-      if(paid>latestBalance)throw new Error("Payment exceeds the current balance.");
-      transaction.update(stayRef,{status:"Checked-out",balance:latestBalance-paid,checkoutActualAt:firebase.firestore.FieldValue.serverTimestamp(),checkoutPayment:paid});
-      transaction.update(roomRef,{status:"Available",currentStayId:firebase.firestore.FieldValue.delete()});
-      if(paid>0)transaction.set(paymentRef,{stayId,roomNumber:stay.roomNumber,amount:paid,method,date:localDate(),type:"Checkout Balance",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    });
-    alert("Guest checked out. Room is now available.");
-  }catch(error){alert(error.message);}
+});
+$("logoutBtn").onclick=()=>{if(confirm("Logout from admin dashboard?"))auth.signOut();};
+$("resetPw").onclick=async()=>{
+  const u=auth.currentUser;if(!u||!u.email)return;
+  try{await auth.sendPasswordResetEmail(u.email);toast("Reset link sent to "+u.email);}catch(e){toast(e.message,"error");}
+};
+
+/* ============ LISTENERS ============ */
+function listen(name,setter){
+  unsubs.push(db.collection(name).onSnapshot(s=>{setter(s.docs.map(d=>({id:d.id,...d.data()})));renderAll();},err=>toast(name+": "+err.message,"error")));
+}
+function startListeners(){
+  stopListeners();
+  listen("rooms",d=>rooms=d);
+  listen("stays",d=>stays=d);
+  listen("payments",d=>payments=d);
+  listen("expenses",d=>expenses=d);
+  listen("bookingRequests",d=>bookings=d);
+  unsubs.push(db.collection("settings").doc("hotel").onSnapshot(s=>{settings={...SETTINGS_DEFAULT,...(s.exists?s.data():{})};fillSettings();applyCheckinDefaults(false);},()=>{}));
+}
+function stopListeners(){unsubs.forEach(u=>{try{u()}catch(e){}});unsubs=[];rooms=[];stays=[];payments=[];expenses=[];bookings=[];}
+
+/* ============ RENDER ROUTER ============ */
+const renderers={dashboard:renderDashboard,checkin:renderCheckin,guests:renderGuests,bookings:renderBookings,rooms:renderRooms,expenses:renderExpenses,payments:renderPayments,reports:renderReports,settings:()=>{}};
+function renderAll(){
+  if($("app").classList.contains("hidden"))return;
+  $("todayLabel").textContent=fmtDate(localDate());
+  const r=renderers[currentPage];if(r)r();
+  const act=stays.filter(s=>s.status==="Checked-in").length;
+  const pend=bookings.filter(b=>!b.status||b.status==="Pending").length;
+  $("navGuests").textContent=act;$("navGuests").classList.toggle("hidden",!act);
+  $("navBookings").textContent=pend;$("navBookings").classList.toggle("hidden",!pend);
+}
+function tbl(headers,rows,cls){
+  if(!rows.length)return `<div class="empty">No records found.</div>`;
+  return `<table class="rt"><thead><tr>${headers.map(h=>`<th class="${h.startsWith("#")?"num":""}">${esc(h.replace(/^#/,""))}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>{const h=headers[i]||"";const lbl=h.replace(/^#/,"");const isAct=lbl==="Actions";return `<td class="${isAct?"actions":""}${h.startsWith("#")?" num":""}" ${isAct?"":`data-label="${esc(lbl)}"`}>${c}</td>`;}).join("")}</tr>`).join("")}</tbody></table>`;
 }
 
-$("setupRooms").onclick=async()=>{
-  if(!confirm("Create 21 rooms from 8 to 28?"))return;
-  const button=$("setupRooms");button.disabled=true;
+/* ============ DASHBOARD ============ */
+function sumBy(list,fn){return list.reduce((s,x)=>s+num(fn(x)),0);}
+function statCard(icon,label,value,cls){return `<div class="stat ${cls||""}"><div class="si">${icon}</div><div><p>${esc(label)}</p><h3>${value}</h3></div></div>`;}
+function barChart(days,incMap,expMap){
+  const max=Math.max(1,...days.map(d=>Math.max(incMap[d]||0,expMap[d]||0)));
+  return `<div class="bars">${days.map(d=>{const i=incMap[d]||0,e=expMap[d]||0;return `<div class="bgrp"><div class="bpair"><div class="bar inc" style="height:${i/max*100}%" title="Income ${money(i)}"></div><div class="bar exp" style="height:${e/max*100}%" title="Expense ${money(e)}"></div></div><div class="blabel">${days.length>10?d.slice(8):shortDate(d)}</div></div>`;}).join("")}</div>`;
+}
+function groupSum(list,key,amt){const m={};list.forEach(x=>{const k=key(x);if(k===undefined)return;m[k]=(m[k]||0)+num(amt(x));});return m;}
+function hbars(map){
+  const e=Object.entries(map).sort((a,b)=>b[1]-a[1]);if(!e.length)return `<div class="empty">No data yet.</div>`;
+  const max=e[0][1]||1,total=e.reduce((s,x)=>s+x[1],0)||1;
+  return e.map(([k,v])=>`<div class="hbar"><div class="row"><span>${esc(k||"Other")}</span><b>${money(v)} <span class="muted">(${Math.round(v/total*100)}%)</span></b></div><div class="track"><div class="fill" style="width:${v/max*100}%"></div></div></div>`).join("");
+}
+function renderDashboard(){
+  const today=localDate(),month=today.slice(0,7);
+  const incT=sumBy(payments.filter(p=>p.date===today),p=>p.amount),expT=sumBy(expenses.filter(e=>e.date===today),e=>e.amount);
+  const incM=sumBy(payments.filter(p=>(p.date||"").slice(0,7)===month),p=>p.amount),expM=sumBy(expenses.filter(e=>(e.date||"").slice(0,7)===month),e=>e.amount);
+  const occ=rooms.filter(r=>r.status==="Occupied").length,avail=rooms.filter(r=>r.status==="Available").length,mnt=rooms.filter(r=>r.status==="Maintenance").length;
+  const dues=sumBy(stays.filter(s=>s.status==="Checked-out"&&num(s.balance)>0),s=>s.balance);
+  const pend=bookings.filter(b=>!b.status||b.status==="Pending").length;
+  $("dashStats").innerHTML=
+    statCard("🛏️","Occupied / Total Rooms",occ+" / "+rooms.length,"r")+
+    statCard("✅","Available Rooms",avail,"g")+
+    statCard("💵","Today's Income",money(incT),"g")+
+    statCard("🧾","Today's Expense",money(expT),"r")+
+    statCard("📊","Today's Net",money(incT-expT),"b")+
+    statCard("📅","This Month Net",money(incM-expM),"b")+
+    statCard("⏳","Pending Dues",money(dues),"a")+
+    statCard("🔔","Booking Requests",pend,"a");
+  const days=[];for(let i=6;i>=0;i--)days.push(addDays(today,-i));
+  const im=groupSum(payments,p=>p.date,p=>p.amount),em=groupSum(expenses,e=>e.date,e=>e.amount);
+  $("chart7").innerHTML=barChart(days,im,em);
+  const tot=rooms.length||1,pOcc=occ/tot*100,pMnt=mnt/tot*100;
+  $("donutBox").innerHTML=`<div class="donut" style="background:conic-gradient(var(--red) 0 ${pOcc}%,var(--amber) ${pOcc}% ${pOcc+pMnt}%,var(--green) ${pOcc+pMnt}% 100%)"><b>${Math.round(pOcc)}%</b></div><div class="legend" style="justify-content:center"><span><i style="background:var(--red)"></i>Occupied ${occ}</span><span><i style="background:var(--green)"></i>Available ${avail}</span><span><i style="background:var(--amber)"></i>Maint. ${mnt}</span></div>`;
+  $("roomBoard").innerHTML=rooms.length?[...rooms].sort((a,b)=>a.number-b.number).map(r=>{
+    const cls=r.status==="Occupied"?"occ":r.status==="Maintenance"?"mnt":"";
+    const g=r.status==="Occupied"?stays.find(s=>s.id===r.currentStayId):null;
+    return `<button class="chip ${cls}" ${g?`data-act="checkout" data-id="${esc(g.id)}"`:""} title="${esc(g?g.guestName:r.status)}">${esc(r.number)}</button>`;
+  }).join(""):`<div class="empty" style="grid-column:1/-1">No rooms yet. Go to Rooms page.</div>`;
+  const due=stays.filter(s=>s.status==="Checked-in"&&s.checkoutDate&&s.checkoutDate<=today).sort((a,b)=>a.checkoutDate.localeCompare(b.checkoutDate));
+  $("dueList").innerHTML=due.length?due.map(s=>`<div class="it"><div><b>${esc(s.guestName)}</b><div class="small">Room ${esc(s.roomNumber)} · ${s.checkoutDate<today?'<span style="color:var(--red)">Overdue</span> ':""}${fmtDate(s.checkoutDate)}</div></div><button class="btn sm green" data-act="checkout" data-id="${esc(s.id)}">Check-out</button></div>`).join(""):`<div class="empty">No check-outs due. 🎉</div>`;
+  $("dashCats").innerHTML=hbars(groupSum(expenses.filter(e=>(e.date||"").slice(0,7)===month),e=>e.category,e=>e.amount));
+  const rp=[...payments].sort((a,b)=>(b.date||"").localeCompare(a.date||"")||tsVal(b)-tsVal(a)).slice(0,6);
+  $("recentPay").innerHTML=rp.length?rp.map(p=>`<div class="it"><div><b>${money(p.amount)}</b><div class="small">Room ${esc(p.roomNumber||"-")} · ${esc(p.type||"")} · ${esc(p.method||"")}</div></div><span class="small">${fmtDate(p.date)}</span></div>`).join(""):`<div class="empty">No payments yet.</div>`;
+}
+
+/* ============ CHECK-IN ============ */
+function applyCheckinDefaults(force){
+  if(force||!$("ciInTime").value)$("ciInTime").value=settings.inTime||"12:00";
+  if(force||!$("ciOutTime").value)$("ciOutTime").value=settings.outTime||"11:00";
+}
+function fillRoomSelect(){
+  const sel=$("ciRoom"),prev=sel.value;
+  sel.innerHTML='<option value="">Select available room</option>'+[...rooms].filter(r=>r.status==="Available").sort((a,b)=>a.number-b.number).map(r=>`<option value="${esc(r.id)}">Room ${esc(r.number)} – ${esc(r.type)} – ${money(r.rate)}</option>`).join("");
+  if([...sel.options].some(o=>o.value===prev))sel.value=prev;
+}
+function ciCalc(){
+  const room=rooms.find(r=>r.id===$("ciRoom").value);
+  const rate=num($("ciRate").value),s=$("ciInDate").value,e=$("ciOutDate").value;
+  const days=s&&e&&e>s?dateDays(s,e):0;
+  const roomAmt=rate*days,extra=num($("ciExtra").value),disc=num($("ciDisc").value),adv=num($("ciAdv").value);
+  const total=roomAmt+extra-disc;
+  $("ciSummary").innerHTML=`<p><span>Room Charges (${money(rate)} × ${days} day${days===1?"":"s"})</span><strong>${money(roomAmt)}</strong></p><p><span>Extra Charges</span><strong>${money(extra)}</strong></p><p><span>Discount</span><strong>− ${money(disc)}</strong></p><p class="total"><span><b>Total Amount</b></span><strong>${money(total)}</strong></p><p><span>Advance Paid</span><strong>${money(adv)}</strong></p><p><span>Balance</span><strong>${money(total-adv)}</strong></p>`;
+  return {room,rate,days,roomAmt,extra,disc,adv,total};
+}
+function renderCheckin(){fillRoomSelect();ciCalc();}
+$("ciRoom").addEventListener("change",()=>{const r=rooms.find(x=>x.id===$("ciRoom").value);$("ciRate").value=r?r.rate:"";ciCalc();});
+["ciRate","ciInDate","ciOutDate","ciExtra","ciDisc","ciAdv"].forEach(id=>{$(id).addEventListener("input",ciCalc);$(id).addEventListener("change",ciCalc);});
+$("ciInDate").addEventListener("change",()=>{if($("ciOutDate").value<=$("ciInDate").value)$("ciOutDate").value=addDays($("ciInDate").value,1);ciCalc();});
+function resetCheckinForm(){
+  $("ciForm").reset();
+  $("ciInDate").value=localDate();$("ciOutDate").value=addDays(localDate(),1);
+  $("ciGuests").value=1;$("ciExtra").value=0;$("ciDisc").value=0;$("ciAdv").value=0;$("ciRate").value="";
+  applyCheckinDefaults(true);pendingBookingId=null;ciCalc();
+}
+$("ciForm").onsubmit=async e=>{
+  e.preventDefault();
+  const c=ciCalc(),btn=$("ciBtn");
+  const guestName=$("ciName").value.trim(),phone=$("ciPhone").value.trim();
+  const inD=$("ciInDate").value,outD=$("ciOutDate").value,inT=$("ciInTime").value,outT=$("ciOutTime").value;
+  if(!c.room)return toast("Please select a room.","error");
+  if(!guestName||!/^[0-9]{10}$/.test(phone))return toast("Enter guest name and valid 10 digit mobile.","error");
+  if(!inD||!outD||outD<=inD||!inT||!outT)return toast("Check the check-in / check-out dates and times.","error");
+  if(c.days<1||c.total<0)return toast("Total amount is invalid. Check rate, days and discount.","error");
+  if(c.adv>c.total)return toast("Advance cannot be more than the total amount.","error");
+  btn.disabled=true;
   try{
-    const existing=await db.collection("rooms").get();
-    if(!existing.empty){$("roomMessage").innerText="Room records already exist. No changes made.";return;}
+    const stayRef=db.collection("stays").doc(),payRef=db.collection("payments").doc(),roomRef=db.collection("rooms").doc(c.room.id);
+    const stay={guestName,phone,idType:$("ciIdType").value||"",idLast4:$("ciIdLast4").value||"",guestCount:num($("ciGuests").value)||1,
+      roomId:c.room.id,roomNumber:c.room.number,roomType:c.room.type,rate:c.rate,days:c.days,roomAmount:c.roomAmt,extraCharges:c.extra,discount:c.disc,
+      totalAmount:c.total,advance:c.adv,balance:c.total-c.adv,paymentMethod:$("ciMethod").value,notes:$("ciNotes").value.trim(),
+      checkinDate:inD,checkinTime:inT,checkoutDate:outD,checkoutTime:outT,status:"Checked-in"};
+    await db.runTransaction(async t=>{
+      const rd=await t.get(roomRef);
+      if(!rd.exists||rd.data().status!=="Available")throw new Error("This room is no longer available. Select another room.");
+      t.set(stayRef,{...stay,createdAt:FV.serverTimestamp()});
+      t.update(roomRef,{status:"Occupied",currentStayId:stayRef.id});
+      if(c.adv>0)t.set(payRef,{stayId:stayRef.id,roomNumber:c.room.number,amount:c.adv,method:stay.paymentMethod,date:localDate(),type:"Advance",createdAt:FV.serverTimestamp()});
+    });
+    if(pendingBookingId){try{await db.collection("bookingRequests").doc(pendingBookingId).update({status:"Checked-in"});}catch(x){}}
+    toast("Guest checked in successfully!");
+    const bill={...stay,id:stayRef.id};
+    resetCheckinForm();
+    openBill(bill);
+  }catch(err){toast(err.message,"error");}
+  finally{btn.disabled=false;}
+};
+
+/* ============ GUESTS ============ */
+$("gTabs").onclick=e=>{const b=e.target.closest("button[data-tab]");if(!b)return;guestTab=b.dataset.tab;document.querySelectorAll("#gTabs button").forEach(x=>x.classList.toggle("active",x===b));renderGuests();};
+$("gSearch").addEventListener("input",renderGuests);
+function renderGuests(){
+  const q=$("gSearch").value.trim().toLowerCase();
+  let list=[...stays];
+  if(guestTab==="active")list=list.filter(s=>s.status==="Checked-in");
+  else if(guestTab==="out")list=list.filter(s=>s.status==="Checked-out");
+  else if(guestTab==="dues")list=list.filter(s=>s.status==="Checked-out"&&num(s.balance)>0);
+  if(q)list=list.filter(s=>[s.guestName,s.phone,s.roomNumber].some(v=>String(v||"").toLowerCase().includes(q)));
+  list.sort((a,b)=>tsVal(b)-tsVal(a));
+  const rows=list.map(s=>{
+    const act=s.status==="Checked-in",dueOut=num(s.balance)>0&&!act;
+    return [
+      `<b>${esc(s.guestName)}</b><div class="small">${esc(s.phone||"")}</div>`,
+      `Room ${esc(s.roomNumber)}<div class="small">${esc(s.roomType||"")}</div>`,
+      `${fmtDate(s.checkinDate)} <span class="small">${fmtTime(s.checkinTime)}</span>`,
+      `${fmtDate(s.checkoutDate)} <span class="small">${fmtTime(s.checkoutTime)}</span>`,
+      money(s.totalAmount),
+      `<span style="color:${num(s.balance)>0?"var(--red)":"var(--green)"};font-weight:700">${money(s.balance)}</span>`,
+      statusBadge(s.status)+(dueOut?` <span class="badge red">Due</span>`:""),
+      `<button class="btn sm outline" data-act="bill" data-id="${esc(s.id)}">🖨 Bill</button><button class="btn sm outline" data-act="editStay" data-id="${esc(s.id)}">✏️ Edit</button>`+
+      (act?`<button class="btn sm green" data-act="checkout" data-id="${esc(s.id)}">Check-out</button>`:"")+
+      (dueOut?`<button class="btn sm blue" data-act="collect" data-id="${esc(s.id)}">Collect</button>`:"")+
+      `<button class="btn sm red" data-act="delStay" data-id="${esc(s.id)}">🗑</button>`
+    ];
+  });
+  $("guestTable").innerHTML=tbl(["Guest","Room","Check-in","Check-out","#Total","#Balance","Status","Actions"],rows);
+}
+actionsInit();
+
+/* ----- edit stay ----- */
+function editStay(id){
+  const s=stays.find(x=>x.id===id);if(!s)return;
+  const act=s.status==="Checked-in",dis=act?"":"disabled";
+  openModal(mHead("Edit Guest · Room "+s.roomNumber)+`
+  <form id="esForm">
+    <div class="form-grid two">
+      <div class="field"><label>Guest Name *</label><input id="esName" required value="${esc(s.guestName)}"></div>
+      <div class="field"><label>Mobile *</label><input id="esPhone" required pattern="[0-9]{10}" maxlength="10" value="${esc(s.phone)}"></div>
+      <div class="field"><label>ID Proof</label><select id="esIdType"><option value="">None</option>${opts(["Aadhaar","Driving Licence","Voter ID","Passport","Other"],s.idType)}</select></div>
+      <div class="field"><label>ID last 4</label><input id="esId4" maxlength="4" value="${esc(s.idLast4||"")}"></div>
+      <div class="field"><label>No. of Guests</label><input id="esGuests" type="number" min="1" value="${esc(s.guestCount||1)}"></div>
+      <div class="field"><label>Rate / Day (₹)</label><input id="esRate" type="number" min="0" ${dis} value="${esc(s.rate)}"></div>
+      <div class="field"><label>Check-out Date</label><input id="esOutD" type="date" ${dis} value="${esc(s.checkoutDate)}"></div>
+      <div class="field"><label>Check-out Time</label><input id="esOutT" type="time" ${dis} value="${esc(s.checkoutTime)}"></div>
+      <div class="field"><label>Extra Charges (₹)</label><input id="esExtra" type="number" min="0" ${dis} value="${esc(num(s.extraCharges))}"></div>
+      <div class="field"><label>Discount (₹)</label><input id="esDisc" type="number" min="0" ${dis} value="${esc(num(s.discount))}"></div>
+      <div class="field full"><label>Notes</label><input id="esNotes" value="${esc(s.notes||"")}"></div>
+    </div>
+    ${act?`<div class="summary" id="esSum"></div>`:`<p class="small" style="margin-top:12px">Amount & dates are locked after check-out. Only guest details can be edited.</p>`}
+    <div class="modal-foot"><button class="btn outline" type="button" data-act="closeModal">Cancel</button><button class="btn" type="submit" id="esBtn">SAVE CHANGES</button></div>
+  </form>`);
+  const calc=()=>{
+    const rate=num($("esRate").value),days=Math.max(0,dateDays(s.checkinDate,$("esOutD").value));
+    const roomAmt=rate*days,total=roomAmt+num($("esExtra").value)-num($("esDisc").value),paid=paidOf(s);
+    if($("esSum"))$("esSum").innerHTML=`<p><span>Room Charges (${money(rate)} × ${days})</span><strong>${money(roomAmt)}</strong></p><p class="total"><span><b>New Total</b></span><strong>${money(total)}</strong></p><p><span>Already Paid</span><strong>${money(paid)}</strong></p><p><span>Balance</span><strong>${money(total-paid)}</strong></p>`;
+    return {rate,days,roomAmt,total};
+  };
+  if(act){["esRate","esOutD","esExtra","esDisc"].forEach(i=>$(i).addEventListener("input",calc));calc();}
+  $("esForm").onsubmit=async ev=>{
+    ev.preventDefault();$("esBtn").disabled=true;
+    try{
+      const base={guestName:$("esName").value.trim(),phone:$("esPhone").value.trim(),idType:$("esIdType").value,idLast4:$("esId4").value,guestCount:num($("esGuests").value)||1,notes:$("esNotes").value.trim()};
+      if(!base.guestName||!/^[0-9]{10}$/.test(base.phone))throw new Error("Enter valid name and 10 digit mobile.");
+      if(!act){await db.collection("stays").doc(id).update(base);}
+      else{
+        const c=calc();
+        if(c.days<1)throw new Error("Check-out date must be after check-in date.");
+        if(c.total<0)throw new Error("Total cannot be negative.");
+        const ref=db.collection("stays").doc(id);
+        await db.runTransaction(async t=>{
+          const d=await t.get(ref);if(!d.exists||d.data().status!=="Checked-in")throw new Error("Guest is no longer checked in.");
+          const paid=paidOf(d.data());
+          if(c.total<paid)throw new Error("New total is less than the amount already paid ("+money(paid)+").");
+          t.update(ref,{...base,rate:c.rate,days:c.days,roomAmount:c.roomAmt,extraCharges:num($("esExtra").value),discount:num($("esDisc").value),totalAmount:c.total,balance:c.total-paid,checkoutDate:$("esOutD").value,checkoutTime:$("esOutT").value});
+        });
+      }
+      closeModal();toast("Guest updated.");
+    }catch(err){toast(err.message,"error");$("esBtn").disabled=false;}
+  };
+}
+
+/* ----- checkout ----- */
+function checkoutModal(id){
+  const s=stays.find(x=>x.id===id);if(!s||s.status!=="Checked-in")return toast("Guest is not checked in.","error");
+  const paid=paidOf(s);
+  openModal(mHead("Check-out · "+s.guestName+" (Room "+s.roomNumber+")")+`
+  <form id="coForm">
+    <div class="form-grid two">
+      <div class="field"><label>Extra Charges (₹)</label><input id="coExtra" type="number" min="0" value="${num(s.extraCharges)}"></div>
+      <div class="field"><label>Discount (₹)</label><input id="coDisc" type="number" min="0" value="${num(s.discount)}"></div>
+      <div class="field"><label>Amount Received Now (₹)</label><input id="coPaid" type="number" min="0" step="1"></div>
+      <div class="field"><label>Payment Method</label><select id="coMethod"><option>Cash</option><option>GPay</option><option>Card</option></select></div>
+    </div>
+    <div class="summary" id="coSum"></div>
+    <p class="small" style="margin-top:10px">If the guest pays less than the due amount, the remaining balance is saved under <b>Pending Dues</b>.</p>
+    <div class="modal-foot"><button class="btn outline" type="button" data-act="closeModal">Cancel</button><button class="btn green" type="submit" id="coBtn">CONFIRM CHECK-OUT</button></div>
+  </form>`);
+  const roomAmt=num(s.roomAmount!=null?s.roomAmount:num(s.rate)*num(s.days));
+  let touched=false;
+  const calc=()=>{
+    const total=roomAmt+num($("coExtra").value)-num($("coDisc").value),due=total-paid;
+    if(!touched)$("coPaid").value=Math.max(0,due);
+    const rec=num($("coPaid").value);
+    $("coSum").innerHTML=`<p><span>Room Charges</span><strong>${money(roomAmt)}</strong></p><p class="total"><span><b>Final Total</b></span><strong>${money(total)}</strong></p><p><span>Already Paid (advance)</span><strong>${money(paid)}</strong></p><p><span>Due Now</span><strong>${money(due)}</strong></p><p><span>Remaining after payment</span><strong style="color:${due-rec>0?"var(--red)":"var(--green)"}">${money(due-rec)}</strong></p>`;
+    return {total,due,rec};
+  };
+  $("coPaid").addEventListener("input",()=>{touched=true;calc();});
+  $("coExtra").addEventListener("input",calc);$("coDisc").addEventListener("input",calc);calc();
+  $("coForm").onsubmit=async ev=>{
+    ev.preventDefault();const c=calc();
+    if(c.due<0)return toast("Discount is too high. Paid amount exceeds total.","error");
+    if(c.rec>c.due)return toast("Received amount is more than the due ("+money(c.due)+").","error");
+    $("coBtn").disabled=true;
+    try{
+      const sRef=db.collection("stays").doc(id),rRef=db.collection("rooms").doc(s.roomId),pRef=db.collection("payments").doc();
+      const extra=num($("coExtra").value),disc=num($("coDisc").value),method=$("coMethod").value;
+      await db.runTransaction(async t=>{
+        const sd=await t.get(sRef),rd=await t.get(rRef);
+        if(!sd.exists||sd.data().status!=="Checked-in")throw new Error("This guest is already checked out.");
+        const st=sd.data(),ra=num(st.roomAmount!=null?st.roomAmount:num(st.rate)*num(st.days));
+        const total=ra+extra-disc,paidNow=paidOf(st),due=total-paidNow;
+        if(due<0||c.rec>due)throw new Error("Amounts changed. Please try again.");
+        t.update(sRef,{status:"Checked-out",extraCharges:extra,discount:disc,totalAmount:total,balance:due-c.rec,checkoutPayment:c.rec,checkoutActualDate:localDate(),checkoutActualAt:FV.serverTimestamp()});
+        if(rd.exists&&rd.data().currentStayId===id)t.update(rRef,{status:"Available",currentStayId:FV.delete()});
+        if(c.rec>0)t.set(pRef,{stayId:id,roomNumber:st.roomNumber,amount:c.rec,method,date:localDate(),type:"Checkout Balance",createdAt:FV.serverTimestamp()});
+      });
+      toast("Guest checked out. Room is now available.");
+      const fresh={...s,status:"Checked-out",extraCharges:extra,discount:disc,totalAmount:c.total,balance:c.due-c.rec};
+      openBill(fresh);
+    }catch(err){toast(err.message,"error");$("coBtn").disabled=false;}
+  };
+}
+
+/* ----- collect due ----- */
+function collectModal(id){
+  const s=stays.find(x=>x.id===id);if(!s)return;const due=num(s.balance);
+  openModal(mHead("Collect Due · "+s.guestName)+`
+  <form id="cdForm"><div class="form-grid two">
+    <div class="field"><label>Amount (₹) — due ${money(due)}</label><input id="cdAmt" type="number" min="1" max="${due}" step="1" value="${due}" required></div>
+    <div class="field"><label>Method</label><select id="cdMethod"><option>Cash</option><option>GPay</option><option>Card</option></select></div>
+  </div><div class="modal-foot"><button class="btn outline" type="button" data-act="closeModal">Cancel</button><button class="btn blue" type="submit" id="cdBtn">RECORD PAYMENT</button></div></form>`);
+  $("cdForm").onsubmit=async ev=>{
+    ev.preventDefault();const amt=num($("cdAmt").value);$("cdBtn").disabled=true;
+    try{
+      const sRef=db.collection("stays").doc(id),pRef=db.collection("payments").doc();
+      await db.runTransaction(async t=>{
+        const d=await t.get(sRef);if(!d.exists)throw new Error("Record not found.");
+        const b=num(d.data().balance);if(amt<=0||amt>b)throw new Error("Amount must be between 1 and "+money(b));
+        t.update(sRef,{balance:b-amt});
+        t.set(pRef,{stayId:id,roomNumber:d.data().roomNumber,amount:amt,method:$("cdMethod").value,date:localDate(),type:"Due Collection",createdAt:FV.serverTimestamp()});
+      });
+      closeModal();toast("Payment recorded.");
+    }catch(err){toast(err.message,"error");$("cdBtn").disabled=false;}
+  };
+}
+
+/* ----- delete stay ----- */
+async function delStay(id){
+  const s=stays.find(x=>x.id===id);if(!s)return;
+  const act=s.status==="Checked-in";
+  if(!confirm("Delete record of "+s.guestName+" (Room "+s.roomNumber+")?\n\nThis also deletes all payments linked to this guest"+(act?" and makes the room Available":"")+". This cannot be undone."))return;
+  try{
+    const batch=db.batch();
+    batch.delete(db.collection("stays").doc(id));
+    payments.filter(p=>p.stayId===id).forEach(p=>batch.delete(db.collection("payments").doc(p.id)));
+    if(act){const r=rooms.find(x=>x.id===s.roomId);if(r&&r.currentStayId===id)batch.update(db.collection("rooms").doc(r.id),{status:"Available",currentStayId:FV.delete()});}
+    await batch.commit();toast("Guest record deleted.");
+  }catch(err){toast(err.message,"error");}
+}
+
+/* ============ BILL ============ */
+function billHTML(s){
+  const h=settings,roomAmt=num(s.roomAmount!=null?s.roomAmount:num(s.rate)*num(s.days)),extra=num(s.extraCharges),disc=num(s.discount),total=num(s.totalAmount),bal=num(s.balance),paid=total-bal;
+  const pays=payments.filter(p=>p.stayId===s.id).sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  const inv="INV-"+String(s.id||"").slice(0,6).toUpperCase();
+  return `<div class="bill">
+    <div class="bill-top"><div><h2>${esc(h.name)}</h2>${h.address?`<p>${esc(h.address)}</p>`:""}${h.phone?`<p>Phone: ${esc(h.phone)}</p>`:""}${h.email?`<p>${esc(h.email)}</p>`:""}${h.gstin?`<p>GSTIN: ${esc(h.gstin)}</p>`:""}</div>
+      <div style="text-align:right"><h3>INVOICE</h3><p><b>${inv}</b></p><p>Date: ${fmtDate(localDate())}</p><p><span class="stamp ${bal>0?"due":"paid"}">${bal>0?"BALANCE DUE":"PAID"}</span></p></div></div>
+    <div class="bill-meta">
+      <div><b>Guest Name</b>${esc(s.guestName)}</div><div><b>Mobile</b>${esc(s.phone||"-")}</div>
+      <div><b>Room</b>${esc(s.roomNumber)} (${esc(s.roomType||"")})</div><div><b>No. of Guests</b>${esc(s.guestCount||1)}</div>
+      <div><b>Check-in</b>${fmtDate(s.checkinDate)} ${fmtTime(s.checkinTime)}</div><div><b>Check-out</b>${fmtDate(s.checkoutDate)} ${fmtTime(s.checkoutTime)}</div>
+      ${s.idType?`<div><b>ID Proof</b>${esc(s.idType)}${s.idLast4?" ····"+esc(s.idLast4):""}</div>`:""}
+    </div>
+    <table><thead><tr><th>Description</th><th class="num">Rate</th><th class="num">Days</th><th class="num">Amount</th></tr></thead><tbody>
+      <tr><td>Room charges – ${esc(s.roomType||"")} (Room ${esc(s.roomNumber)})</td><td class="num">${money(s.rate)}</td><td class="num">${esc(s.days)}</td><td class="num">${money(roomAmt)}</td></tr>
+      ${extra?`<tr><td colspan="3">Extra charges</td><td class="num">${money(extra)}</td></tr>`:""}
+      ${disc?`<tr><td colspan="3">Discount</td><td class="num">− ${money(disc)}</td></tr>`:""}
+      <tr class="tot"><td colspan="3">Total Amount</td><td class="num">${money(total)}</td></tr>
+      <tr><td colspan="3">Amount Paid</td><td class="num">${money(paid)}</td></tr>
+      <tr class="tot"><td colspan="3">Balance Due</td><td class="num">${money(bal)}</td></tr>
+    </tbody></table>
+    ${pays.length?`<p style="font-size:12px;margin:14px 0 4px"><b>Payment History</b></p><table><thead><tr><th>Date</th><th>Type</th><th>Method</th><th class="num">Amount</th></tr></thead><tbody>${pays.map(p=>`<tr><td>${fmtDate(p.date)}</td><td>${esc(p.type)}</td><td>${esc(p.method)}</td><td class="num">${money(p.amount)}</td></tr>`).join("")}</tbody></table>`:""}
+    <div class="sign"><span>Guest Signature</span><span>Authorised Signature</span></div>
+    <div class="foot">${esc(h.footer)}</div></div>`;
+}
+function openBill(s){
+  if(typeof s==="string")s=stays.find(x=>x.id===s);if(!s)return;
+  openModal(`<div class="no-print">${mHead("Bill / Invoice")}</div>${billHTML(s)}<div class="modal-foot no-print"><button class="btn outline" type="button" data-act="closeModal">Close</button><button class="btn" type="button" data-act="printBill">🖨 PRINT BILL</button></div>`,true);
+}
+function printBill(){
+  document.body.classList.add("printing-bill");
+  const done=()=>{document.body.classList.remove("printing-bill");window.removeEventListener("afterprint",done);};
+  window.addEventListener("afterprint",done);
+  window.print();
+}
+
+/* ============ BOOKINGS ============ */
+function renderBookings(){
+  const list=[...bookings].sort((a,b)=>tsVal(b)-tsVal(a));
+  const rows=list.map(b=>{
+    const name=pick(b,["name","guestName","fullName","customerName"]),phone=pick(b,["phone","mobile","mobileNumber","contact"]),email=pick(b,["email"]);
+    const ci=pick(b,["checkin","checkIn","checkinDate","checkInDate","arrival","from"]),co=pick(b,["checkout","checkOut","checkoutDate","checkOutDate","departure","to"]);
+    const room=pick(b,["roomType","room","roomName"]),gc=pick(b,["guests","guestCount","persons","adults"]),msg=pick(b,["message","notes","note","requests","remarks"]);
+    const st=b.status||"Pending",open=st==="Pending";
+    return [
+      `<b>${esc(name||"-")}</b>${email?`<div class="small">${esc(email)}</div>`:""}`,
+      phone?`<a href="tel:${esc(phone)}">${esc(phone)}</a>`:"-",
+      `${fmtDate(ci)} → ${fmtDate(co)}`,
+      `${esc(room||"-")}${gc?`<div class="small">${esc(gc)} guest(s)</div>`:""}`,
+      esc(msg||"-"),statusBadge(st),
+      `<button class="btn sm green" data-act="bkCheckin" data-id="${esc(b.id)}">Check-in</button>`+
+      (open?`<button class="btn sm outline" data-act="bkConfirm" data-id="${esc(b.id)}">Confirm</button><button class="btn sm outline" data-act="bkReject" data-id="${esc(b.id)}">Reject</button>`:"")+
+      `<button class="btn sm red" data-act="bkDel" data-id="${esc(b.id)}">🗑</button>`
+    ];
+  });
+  $("bookingTable").innerHTML=tbl(["Guest","Mobile","Stay","Room / Guests","Message","Status","Actions"],rows);
+}
+async function setBooking(id,status){try{await db.collection("bookingRequests").doc(id).update({status});toast("Marked "+status+".");}catch(e){toast(e.message,"error");}}
+function bkCheckin(id){
+  const b=bookings.find(x=>x.id===id);if(!b)return;
+  showPage("checkin");resetCheckinForm();pendingBookingId=id;
+  $("ciName").value=pick(b,["name","guestName","fullName","customerName"]);
+  $("ciPhone").value=String(pick(b,["phone","mobile","mobileNumber","contact"])).replace(/\D/g,"").slice(-10);
+  const g=num(pick(b,["guests","guestCount","persons","adults"]));if(g)$("ciGuests").value=g;
+  const ci=pick(b,["checkin","checkIn","checkinDate","checkInDate","arrival","from"]),co=pick(b,["checkout","checkOut","checkoutDate","checkOutDate","departure","to"]);
+  if(typeof ci==="string"&&/^\d{4}-\d{2}-\d{2}/.test(ci))$("ciInDate").value=ci.slice(0,10);
+  if(typeof co==="string"&&/^\d{4}-\d{2}-\d{2}/.test(co))$("ciOutDate").value=co.slice(0,10);
+  ciCalc();toast("Details filled from booking. Select a room.");
+}
+
+/* ============ ROOMS ============ */
+function renderRooms(){
+  $("initRooms").classList.toggle("hidden",rooms.length>0);
+  $("roomGrid").innerHTML=rooms.length?[...rooms].sort((a,b)=>a.number-b.number).map(r=>{
+    const cls=r.status==="Occupied"?"occ":r.status==="Maintenance"?"mnt":"";
+    const g=r.status==="Occupied"?stays.find(s=>s.id===r.currentStayId):null;
+    return `<div class="room ${cls}"><h4>Room ${esc(r.number)}</h4><div class="small">${esc(r.type)}</div><div class="rate">${money(r.rate)}<span class="small"> / day</span></div>${statusBadge(r.status)}${g?`<div class="small" style="margin-top:6px">👤 ${esc(g.guestName)}</div>`:""}<div class="btns"><button class="btn sm outline" data-act="editRoom" data-id="${esc(r.id)}">✏️ Edit</button><button class="btn sm red" data-act="delRoom" data-id="${esc(r.id)}">🗑</button></div></div>`;
+  }).join(""):`<div class="empty" style="grid-column:1/-1">No rooms yet. Tap "Initialize 21 Rooms" or add rooms manually.</div>`;
+}
+function roomModal(id){
+  const r=id?rooms.find(x=>x.id===id):null;
+  const occ=r&&r.status==="Occupied";
+  const types=[...new Set(["Normal Single","Normal Double","AC Single","AC Double",...rooms.map(x=>x.type)])];
+  openModal(mHead(r?"Edit Room "+r.number:"Add Room")+`
+  <form id="rmForm"><div class="form-grid two">
+    <div class="field"><label>Room Number *</label><input id="rmNum" type="number" min="1" required value="${r?esc(r.number):""}"></div>
+    <div class="field"><label>Room Type *</label><input id="rmType" list="typeList" required value="${r?esc(r.type):""}"><datalist id="typeList">${types.map(t=>`<option value="${esc(t)}">`).join("")}</datalist></div>
+    <div class="field"><label>Rate / Day (₹) *</label><input id="rmRate" type="number" min="0" step="1" required value="${r?esc(r.rate):""}"></div>
+    <div class="field"><label>Status</label><select id="rmStatus" ${occ?"disabled":""}>${occ?`<option>Occupied</option>`:opts(["Available","Maintenance"],r?r.status:"Available")}</select></div>
+  </div>${occ?`<p class="small" style="margin-top:10px">Room is occupied. Check out the guest to change status. New rate applies to future check-ins only.</p>`:""}
+  <div class="modal-foot"><button class="btn outline" type="button" data-act="closeModal">Cancel</button><button class="btn" type="submit" id="rmBtn">SAVE ROOM</button></div></form>`);
+  $("rmForm").onsubmit=async ev=>{
+    ev.preventDefault();$("rmBtn").disabled=true;
+    try{
+      const number=num($("rmNum").value),type=$("rmType").value.trim(),rate=num($("rmRate").value);
+      if(!number||!type)throw new Error("Enter room number and type.");
+      if(rooms.some(x=>x.number===number&&(!r||x.id!==r.id)))throw new Error("Room "+number+" already exists.");
+      if(r){const d={number,type,rate};if(!occ)d.status=$("rmStatus").value;await db.collection("rooms").doc(r.id).update(d);}
+      else await db.collection("rooms").doc("room-"+number).set({number,type,rate,status:$("rmStatus").value});
+      closeModal();toast("Room saved.");
+    }catch(err){toast(err.message,"error");$("rmBtn").disabled=false;}
+  };
+}
+async function delRoom(id){
+  const r=rooms.find(x=>x.id===id);if(!r)return;
+  if(r.status==="Occupied")return toast("Cannot delete an occupied room. Check out the guest first.","error");
+  if(!confirm("Delete Room "+r.number+"? Old guest records are kept."))return;
+  try{await db.collection("rooms").doc(id).delete();toast("Room deleted.");}catch(e){toast(e.message,"error");}
+}
+$("initRooms").onclick=async()=>{
+  if(!confirm("Create 21 rooms from 8 to 28?"))return;
+  const b=$("initRooms");b.disabled=true;
+  try{
+    const ex=await db.collection("rooms").get();if(!ex.empty){toast("Rooms already exist.","error");return;}
     const batch=db.batch();
     for(let n=8;n<=28;n++){
       let type="Normal Single",rate=500;
@@ -380,22 +905,134 @@ $("setupRooms").onclick=async()=>{
       else if([27,28].includes(n)){type="AC Double";rate=1800;}
       batch.set(db.collection("rooms").doc("room-"+n),{number:n,type,rate,status:"Available"});
     }
-    await batch.commit();$("roomMessage").innerText="21 rooms created successfully!";
-  }catch(error){$("roomMessage").innerText=error.message;}
-  finally{button.disabled=false;}
+    await batch.commit();toast("21 rooms created!");
+  }catch(e){toast(e.message,"error");}finally{b.disabled=false;}
 };
-function stopDashboard(){
-  [unsubscribeRooms,unsubscribePayments,unsubscribeBookings,unsubscribeStays,unsubscribeExpenses].forEach(unsub=>{if(typeof unsub==="function")unsub();});
-  unsubscribeRooms=unsubscribePayments=unsubscribeBookings=unsubscribeStays=unsubscribeExpenses=null;
+
+/* ============ EXPENSES ============ */
+$("eCat").innerHTML='<option value="">All categories</option>'+CATEGORIES.map(c=>`<option>${c}</option>`).join("");
+$("eMonth").value=localDate().slice(0,7);
+["eMonth","eCat","eSearch"].forEach(i=>{$(i).addEventListener("input",renderExpenses);$(i).addEventListener("change",renderExpenses);});
+$("eClear").onclick=()=>{$("eMonth").value="";$("eCat").value="";$("eSearch").value="";renderExpenses();};
+function renderExpenses(){
+  const m=$("eMonth").value,c=$("eCat").value,q=$("eSearch").value.trim().toLowerCase();
+  const list=expenses.filter(e=>(!m||(e.date||"").slice(0,7)===m)&&(!c||e.category===c)&&(!q||String(e.description||"").toLowerCase().includes(q))).sort((a,b)=>(b.date||"").localeCompare(a.date||"")||tsVal(b)-tsVal(a));
+  $("eTotal").textContent=money(sumBy(list,e=>e.amount));
+  $("expenseTable").innerHTML=tbl(["Date","Category","Description","Method","#Amount","Actions"],list.slice(0,300).map(e=>[
+    fmtDate(e.date),`<span class="badge gray">${esc(e.category)}</span>`,esc(e.description),esc(e.method),`<b>${money(e.amount)}</b>`,
+    `<button class="btn sm outline" data-act="editExp" data-id="${esc(e.id)}">✏️ Edit</button><button class="btn sm red" data-act="delExp" data-id="${esc(e.id)}">🗑</button>`]));
 }
-$("logoutBtn").onclick=async()=>{
+function expModal(id){
+  const e=id?expenses.find(x=>x.id===id):null;
+  openModal(mHead(e?"Edit Expense":"Add Expense")+`
+  <form id="exForm"><div class="form-grid two">
+    <div class="field"><label>Date *</label><input id="exDate" type="date" required value="${e?esc(e.date):localDate()}"></div>
+    <div class="field"><label>Category *</label><select id="exCat" required>${opts(CATEGORIES,e?e.category:"")}</select></div>
+    <div class="field full"><label>Description *</label><input id="exDesc" required maxlength="180" value="${e?esc(e.description):""}" placeholder="Expense details"></div>
+    <div class="field"><label>Amount (₹) *</label><input id="exAmt" type="number" min="0.01" step="0.01" required value="${e?esc(e.amount):""}"></div>
+    <div class="field"><label>Payment Method *</label><select id="exMethod">${opts(["Cash","GPay","Card","Bank Transfer"],e?e.method:"Cash")}</select></div>
+  </div><div class="modal-foot"><button class="btn outline" type="button" data-act="closeModal">Cancel</button><button class="btn" type="submit" id="exBtn">SAVE EXPENSE</button></div></form>`);
+  $("exForm").onsubmit=async ev=>{
+    ev.preventDefault();$("exBtn").disabled=true;
+    const d={date:$("exDate").value,category:$("exCat").value,description:$("exDesc").value.trim(),amount:num($("exAmt").value),method:$("exMethod").value};
+    try{
+      if(!d.date||!d.category||!d.description||d.amount<=0)throw new Error("Enter all expense details correctly.");
+      if(e)await db.collection("expenses").doc(e.id).update(d);
+      else await db.collection("expenses").add({...d,createdAt:FV.serverTimestamp(),createdBy:auth.currentUser?auth.currentUser.uid:""});
+      closeModal();toast("Expense saved.");
+    }catch(err){toast(err.message,"error");$("exBtn").disabled=false;}
+  };
+}
+async function delExp(id){
+  const e=expenses.find(x=>x.id===id);if(!e)return;
+  if(!confirm("Delete expense "+money(e.amount)+" ("+e.category+")?"))return;
+  try{await db.collection("expenses").doc(id).delete();toast("Expense deleted.");}catch(err){toast(err.message,"error");}
+}
+
+/* ============ PAYMENTS ============ */
+$("pMonth").value=localDate().slice(0,7);
+["pMonth","pSearch"].forEach(i=>{$(i).addEventListener("input",renderPayments);$(i).addEventListener("change",renderPayments);});
+$("pClear").onclick=()=>{$("pMonth").value="";$("pSearch").value="";renderPayments();};
+function renderPayments(){
+  const m=$("pMonth").value,q=$("pSearch").value.trim().toLowerCase();
+  const rows=payments.map(p=>({...p,guest:(stays.find(s=>s.id===p.stayId)||{}).guestName||"-"}))
+    .filter(p=>(!m||(p.date||"").slice(0,7)===m)&&(!q||[p.guest,p.roomNumber,p.method,p.type].some(v=>String(v||"").toLowerCase().includes(q))))
+    .sort((a,b)=>(b.date||"").localeCompare(a.date||"")||tsVal(b)-tsVal(a));
+  $("pTotal").textContent=money(sumBy(rows,p=>p.amount));
+  $("paymentTable").innerHTML=tbl(["Date","Guest","Room","Type","Method","#Amount","Actions"],rows.slice(0,300).map(p=>[
+    fmtDate(p.date),esc(p.guest),esc(p.roomNumber||"-"),`<span class="badge blue">${esc(p.type||"")}</span>`,esc(p.method),`<b>${money(p.amount)}</b>`,
+    `<button class="btn sm red" data-act="delPay" data-id="${esc(p.id)}">🗑</button>`]));
+}
+async function delPay(id){
+  const p=payments.find(x=>x.id===id);if(!p)return;
+  const st=stays.find(s=>s.id===p.stayId);
+  if(!confirm("Delete payment of "+money(p.amount)+"?"+(st?"\n\nThe amount will be added back to "+st.guestName+"'s balance.":"")))return;
   try{
-    await auth.signOut();
-    window.location.href="index.html";
-  }catch(error){
-    alert("Logout failed: "+error.message);
-  }
+    const batch=db.batch();batch.delete(db.collection("payments").doc(id));
+    if(st)batch.update(db.collection("stays").doc(st.id),{balance:FV.increment(num(p.amount))});
+    await batch.commit();toast("Payment deleted.");
+  }catch(err){toast(err.message,"error");}
+}
+
+/* ============ REPORTS ============ */
+$("rMonth").value=localDate().slice(0,7);
+$("rMonth").addEventListener("change",renderReports);$("rMonth").addEventListener("input",renderReports);
+function repData(){
+  const m=$("rMonth").value||localDate().slice(0,7);
+  return {m,pay:payments.filter(p=>(p.date||"").slice(0,7)===m),exp:expenses.filter(e=>(e.date||"").slice(0,7)===m),ins:stays.filter(s=>(s.checkinDate||"").slice(0,7)===m)};
+}
+function renderReports(){
+  const {m,pay,exp,ins}=repData();
+  const inc=sumBy(pay,p=>p.amount),ex=sumBy(exp,e=>e.amount);
+  $("repStats").innerHTML=statCard("💵","Income (collections)",money(inc),"g")+statCard("🧾","Expenses",money(ex),"r")+statCard("📊","Net Profit",money(inc-ex),"b")+statCard("🛎️","Check-ins",ins.length,"a");
+  const [y,mo]=m.split("-").map(Number),n=new Date(y,mo,0).getDate(),days=[];
+  for(let i=1;i<=n;i++)days.push(m+"-"+pad(i));
+  $("repChart").innerHTML=barChart(days,groupSum(pay,p=>p.date,p=>p.amount),groupSum(exp,e=>e.date,e=>e.amount));
+  $("repCats").innerHTML=hbars(groupSum(exp,e=>e.category,e=>e.amount));
+  $("repMethods").innerHTML=hbars(groupSum(pay,p=>p.method,p=>p.amount));
+}
+$("rPrint").onclick=()=>window.print();
+$("rCsv").onclick=()=>{
+  const {m,pay,exp}=repData();
+  const q=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
+  const lines=[["Type","Date","Category/Type","Description/Guest","Method","Amount"].map(q).join(",")];
+  pay.sort((a,b)=>a.date.localeCompare(b.date)).forEach(p=>lines.push(["Income",p.date,p.type,(stays.find(s=>s.id===p.stayId)||{}).guestName||"Room "+p.roomNumber,p.method,p.amount].map(q).join(",")));
+  exp.sort((a,b)=>a.date.localeCompare(b.date)).forEach(e=>lines.push(["Expense",e.date,e.category,e.description,e.method,e.amount].map(q).join(",")));
+  const blob=new Blob(["\ufeff"+lines.join("\n")],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="PS-Residency-"+m+".csv";document.body.appendChild(a);a.click();a.remove();
 };
+
+/* ============ SETTINGS ============ */
+function fillSettings(){
+  $("sName").value=settings.name;$("sPhone").value=settings.phone;$("sEmail").value=settings.email;$("sGst").value=settings.gstin;
+  $("sAddress").value=settings.address;$("sIn").value=settings.inTime;$("sOut").value=settings.outTime;$("sFooter").value=settings.footer;
+}
+$("setForm").onsubmit=async e=>{
+  e.preventDefault();
+  const d={name:$("sName").value.trim()||"PS Residency",phone:$("sPhone").value.trim(),email:$("sEmail").value.trim(),gstin:$("sGst").value.trim(),address:$("sAddress").value.trim(),inTime:$("sIn").value||"12:00",outTime:$("sOut").value||"11:00",footer:$("sFooter").value.trim()};
+  try{await db.collection("settings").doc("hotel").set(d,{merge:true});settings={...settings,...d};applyCheckinDefaults(true);toast("Settings saved.");}
+  catch(err){toast("Could not save: "+err.message,"error");}
+};
+
+/* ============ GLOBAL ACTIONS ============ */
+function actionsInit(){}
+const actions={
+  closeModal,printBill,
+  goPage:id=>showPage(id),
+  bill:id=>openBill(id),editStay,checkout:checkoutModal,collect:collectModal,delStay,
+  addRoom:()=>roomModal(),editRoom:id=>roomModal(id),delRoom,
+  addExp:()=>expModal(),editExp:id=>expModal(id),delExp,delPay,
+  bkConfirm:id=>setBooking(id,"Confirmed"),bkReject:id=>setBooking(id,"Rejected"),bkCheckin,
+  bkDel:async id=>{if(confirm("Delete this booking request?")){try{await db.collection("bookingRequests").doc(id).delete();toast("Booking deleted.");}catch(e){toast(e.message,"error");}}}
+};
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;
+  const fn=actions[b.dataset.act];if(fn)fn(b.dataset.id);
+});
+
+/* ============ INIT ============ */
+resetCheckinForm();
+fillSettings();
 </script>
 </body>
 </html>
