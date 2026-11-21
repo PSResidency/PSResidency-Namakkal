@@ -512,7 +512,7 @@ auth.onAuthStateChanged(user=>{
     stopListeners();$("app").classList.add("hidden");$("loginView").classList.remove("hidden");
   }
 });
-$("logoutBtn").onclick=()=>{if(confirm("Logout from admin dashboard?"))auth.signOut();};
+$("logoutBtn").onclick=async()=>{if(confirm("Logout from admin dashboard?")){try{await auth.signOut();}finally{window.location.href="index.html";}}};
 $("resetPw").onclick=async()=>{
   const u=auth.currentUser;if(!u||!u.email)return;
   try{await auth.sendPasswordResetEmail(u.email);toast("Reset link sent to "+u.email);}catch(e){toast(e.message,"error");}
